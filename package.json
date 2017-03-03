@@ -1,0 +1,30 @@
+{
+  "name": "jr-mailer",
+  "version": "0.0.1",
+  "description": "Serverless aws lambda endpoint to deliver mails",
+  "main": "handler.js",
+  "private": true,
+  "author": "jroehl",
+  "license": "MIT",
+  "scripts": {
+    "test": "eslint **/*.js && npm run compile:prod && node handler.js",
+    "compile": "webpack",
+    "compile:prod": "NODE_ENV=production webpack -p",
+    "deploy": "npm test && serverless deploy",
+    "deploy-prod": "npm test && serverless deploy -s production"
+  },
+  "devDependencies": {
+    "babel-core": "^6.23.1",
+    "babel-loader": "^6.3.2",
+    "babel-plugin-array-includes": "^2.0.3",
+    "babel-preset-es2015": "^6.22.0",
+    "eslint": "^3.16.1",
+    "eslint-config-airbnb-base": "^11.1.0",
+    "eslint-plugin-import": "^2.2.0",
+    "serverless": "^1.8.0",
+    "webpack": "^2.2.1"
+  },
+  "dependencies": {
+    "nodemailer": "^3.1.4"
+  }
+}

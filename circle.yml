@@ -1,0 +1,14 @@
+machine:
+  node:
+    version: 6.1
+
+deployment:
+  dev:
+    branch: master
+    commands:
+      - npm run deploy
+
+  production:
+    branch: production
+    commands:
+      - npm run deploy-prod

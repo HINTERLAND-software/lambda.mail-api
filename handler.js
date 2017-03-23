@@ -34,9 +34,9 @@ module.exports.sendmail = (event = {}, context, callback) => {
       recom = '',
       domain = '',
       receiver = 'roehl.johann@gmail.com',
-  } = event;
+  } = event.body || {};
 
-  console.log(event);
+  console.log(event.body);
 
   const response = {};
 

@@ -34,8 +34,7 @@ functions:
           integration: lambda
           cors:
             origins:
-              - 'pavillon-am-ufer.de'
-              - 'heidpartner.com'
+              - '*'
             headers:
               - Content-Type
               - X-Amz-Date

@@ -110,7 +110,7 @@ module.exports.sendmail = (event = {}, context, callback) => {
         input: event,
       });
       response.headers = {
-        'Access-Control-Allow-Origin': 'pavillon-am-ufer.de,heidpartner.com', // Required for CORS support to work
+        'Access-Control-Allow-Origin': '*', // Required for CORS support to work
         'Access-Control-Allow-Credentials': true // Required for cookies, authorization headers with HTTPS
       };
       // if you don't want to use this transport object anymore, uncomment following line

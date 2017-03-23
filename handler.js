@@ -36,6 +36,7 @@ module.exports.sendmail = (event = {}, context, callback) => {
       receiver = 'roehl.johann@gmail.com',
   } = event.body || {};
 
+  console.log(event.headers);
   console.log(event.body);
 
   const response = {};

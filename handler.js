@@ -36,6 +36,8 @@ module.exports.sendmail = (event = {}, context, callback) => {
       receiver = 'roehl.johann@gmail.com',
   } = event;
 
+  console.log(event);
+
   const response = {};
 
   if (!sender || !name || !message) {

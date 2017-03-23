@@ -29,7 +29,7 @@ functions:
     memorySize: 128
     events:
       - http:
-          path: api/sendmail
+          path: sendmail
           method: post
           integration: lambda
           cors:

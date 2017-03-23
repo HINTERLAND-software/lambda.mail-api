@@ -10,8 +10,10 @@
     "test": "eslint **/*.js && node handler.js",
     "deploy": "npm test && serverless deploy",
     "deploy-prod": "npm test && serverless deploy -s production",
-    "logs": "serverless logs -s dev -f hello",
-    "logs-prod": "serverless logs -s production -f hello"
+    "logs": "serverless logs -s dev -f sendmail",
+    "logs-prod": "serverless logs -s production -f sendmail",
+    "invoke": "serverless invoke -s dev -f sendmail -p tests/data.json",
+    "invoke-prod": "serverless invoke -s production -f sendmail -p tests/data.json"
   },
   "devDependencies": {
     "eslint": "^3.18.0",

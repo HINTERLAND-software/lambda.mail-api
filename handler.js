@@ -1,3 +1,5 @@
+'use strict';
+
 const nodemailer = require('nodemailer');
 
 const getCredentials = (domain) => {

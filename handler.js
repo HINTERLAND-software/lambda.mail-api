@@ -23,7 +23,6 @@ const getCredentials = (domain) => {
 
 module.exports.sendmail = (event = {}, context, callback) => {
   const {
-    sender = '',
       mail = '',
       name = '',
       message = '',
@@ -36,15 +35,14 @@ module.exports.sendmail = (event = {}, context, callback) => {
       receiver = 'roehl.johann@gmail.com',
   } = event.body || {};
 
-  console.log(event.headers);
-  console.log(event.body);
+  console.log(event);
 
   const response = {};
 
-  if (!sender || !name || !message) {
+  if (!mail || !name || !message) {
     response.statusCode = 400;
     response.body = JSON.stringify({
-      message: `No ${sender ? '' : '"sender" '}${name ? '' : '"name" '}${message ? '' : '"message" '}field specified`,
+      message: `No ${mail ? '' : '"mail" '}${name ? '' : '"name" '}${message ? '' : '"message" '}field specified`,
       input: event
     });
     callback(null, response);
@@ -64,7 +62,7 @@ module.exports.sendmail = (event = {}, context, callback) => {
     const mailOptions = {
       from: auth.user.replace('mg.', ''), // sender address
       to: receiver, // list of receivers
-      subject: `NEW MAIL from ${domain} contact form - ${sender}`, // Subject line
+      subject: `NEW MAIL from ${domain} contact form - ${mail}`, // Subject line
       // replyTo: sender,
       // plaintext body
       text: `NEW MAIL from ${mail}\n

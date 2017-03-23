@@ -23,13 +23,23 @@ provider:
   region: eu-central-1
   stage: dev # you can override this via the CLI argument
 
-# package:
-#   exclude:
-#     - '**'
-#   include:
-#     - dist/handler.js
-
 functions:
   sendmail:
     handler: handler.sendmail
     memorySize: 128
+    events:
+      - http:
+          path: api/sendmail
+          method: post
+          integration: lambda
+          cors:
+            origins:
+              - 'pavillon-am-ufer.de'
+              - 'heidpartner.com'
+            headers:
+              - Content-Type
+              - X-Amz-Date
+              - Authorization
+              - X-Api-Key
+              - X-Amz-Security-Token
+            allowCredentials: false

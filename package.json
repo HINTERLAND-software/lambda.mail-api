@@ -7,24 +7,22 @@
   "author": "jroehl",
   "license": "MIT",
   "scripts": {
-    "test": "eslint **/*.js && npm run compile:prod && node handler.js",
-    "compile": "webpack",
-    "compile:prod": "NODE_ENV=production webpack -p",
+    "test": "eslint **/*.js && node handler.js",
     "deploy": "npm test && serverless deploy",
-    "deploy-prod": "npm test && serverless deploy -s production"
+    "deploy-prod": "npm test && serverless deploy -s production",
+    "logs": "serverless logs -s dev -f sendmail",
+    "logs-prod": "serverless logs -s production -f sendmail",
+    "invoke": "serverless invoke -s dev -f sendmail -p tests/data.json",
+    "invoke-prod": "serverless invoke -s production -f sendmail -p tests/data.json"
   },
   "devDependencies": {
-    "babel-core": "^6.23.1",
-    "babel-loader": "^6.3.2",
-    "babel-plugin-array-includes": "^2.0.3",
-    "babel-preset-es2015": "^6.22.0",
-    "eslint": "^3.16.1",
-    "eslint-config-airbnb-base": "^11.1.0",
+    "eslint": "^3.18.0",
+    "eslint-config-airbnb-base": "^11.1.1",
     "eslint-plugin-import": "^2.2.0",
-    "serverless": "^1.8.0",
-    "webpack": "^2.2.1"
+    "serverless": "^1.9.0",
+    "serverless-plugin-include-dependencies": "^2.0.0"
   },
   "dependencies": {
-    "nodemailer": "^3.1.4"
+    "nodemailer": "^3.1.8"
   }
 }

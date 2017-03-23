@@ -13,20 +13,23 @@
 
 service: jr-mailer
 
+plugins:
+  - serverless-plugin-include-dependencies
+
 provider:
   name: aws
-  runtime: nodejs4.3
+  runtime: nodejs6.10
   profile: jrdev
   region: eu-central-1
   stage: dev # you can override this via the CLI argument
 
-package:
-  exclude:
-    - '**'
-  include:
-    - dist/handler.js
+# package:
+#   exclude:
+#     - '**'
+#   include:
+#     - dist/handler.js
 
 functions:
   sendmail:
-    handler: dist/handler.sendmail
+    handler: handler.sendmail
     memorySize: 128

@@ -4,7 +4,7 @@ module.exports = {
     'require-jsdoc': 'warn',
     'comma-dangle': 'off',
     'prefer-template': 'warn',
-    strict: 'warn',
+    strict: 'off',
     'import/no-unresolved': 'warn'
   }
 };

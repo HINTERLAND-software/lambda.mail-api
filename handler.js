@@ -67,8 +67,8 @@ module.exports.sendmail = (event = {}, context, callback) => {
       text: `NEW MAIL from ${mail}\n
             SENDER ${name} ${surname} | ${mail} ${phone}\n
             MESSAGE ${message}\n
-            ${recom ? 'RECOMMENDATION ' + recom + '<br>\n' : ''}
-            CONTACTBY ${bymail ? 'mail: ' + mail : ''} ${byphone ? 'phone: ' + phone : ''}`,
+            ${recom ? `RECOMMENDATION ${recom}<br>\n` : ''}
+            CONTACTBY ${bymail ? `mail: ${mail}` : ''} ${byphone ? `phone: ${phone}` : ''}`,
       // html body
       html: `<h2 style="font-family: HelveticaNeue-Light, Helvetica Neue Light, Helvetica Neue, Helvetica, Arial, Lucida Grande, sans-serif; font-weight: 100">NEW MAIL</h2>
             <table>
@@ -88,13 +88,13 @@ module.exports.sendmail = (event = {}, context, callback) => {
                   ${message}
                 </td>
               </tr>
-              ${recom ? '<tr><td style="font-family: HelveticaNeue-Light, Helvetica Neue Light, Helvetica Neue, Helvetica, Arial, Lucida Grande, sans-serif; font-weight: 100">RECOMMENDATION</td><td style="font-family: HelveticaNeue-Light, Helvetica Neue Light, Helvetica Neue, Helvetica, Arial, Lucida Grande, sans-serif; font-weight: 100">' + recom + '</td></tr>' : ''}
+              ${recom ? `<tr><td style="font-family: HelveticaNeue-Light, Helvetica Neue Light, Helvetica Neue, Helvetica, Arial, Lucida Grande, sans-serif; font-weight: 100">RECOMMENDATION</td><td style="font-family: HelveticaNeue-Light, Helvetica Neue Light, Helvetica Neue, Helvetica, Arial, Lucida Grande, sans-serif; font-weight: 100">${recom}</td></tr>` : ''}
               <tr>
                 <td style="font-family: HelveticaNeue-Light, Helvetica Neue Light, Helvetica Neue, Helvetica, Arial, Lucida Grande, sans-serif; font-weight: 100">
                   CONTACT
                 </td>
                 <td style="font-family: HelveticaNeue-Light, Helvetica Neue Light, Helvetica Neue, Helvetica, Arial, Lucida Grande, sans-serif; font-weight: 100">
-                  ${bymail ? 'mail: ' + mail : ''} ${byphone ? 'phone: ' + phone : ''}
+                  ${bymail ? `mail: ${mail}` : ''} ${byphone ? `phone: ${phone}` : ''}
                 </td>
               </tr>
             </table>`

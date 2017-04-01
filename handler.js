@@ -22,8 +22,10 @@ const getCredentials = (domain) => {
 };
 
 module.exports.sendmail = (event = {}, context, callback) => {
+  const self = 'roehl.johann@gmail.com';
+
   const {
-      mail = '',
+    mail = '',
       name = '',
       message = '',
       surname = '',
@@ -32,12 +34,12 @@ module.exports.sendmail = (event = {}, context, callback) => {
       byphone = '',
       recom = '',
       domain = '',
-      receiver = 'roehl.johann@gmail.com',
-  } = event.body || {};
-
-  console.log(event);
+      receiver = self,
+  } = event.body || event || {};
 
   const response = {};
+
+  const recipient = process.env.STAGE === 'production' ? receiver : self;
 
   if (!mail || !name || !message) {
     response.statusCode = 400;
@@ -61,7 +63,7 @@ module.exports.sendmail = (event = {}, context, callback) => {
     // setup e-mail data with unicode symbols
     const mailOptions = {
       from: auth.user.replace('mg.', ''), // sender address
-      to: receiver, // list of receivers
+      to: recipient, // list of receivers
       subject: `NEW MAIL from ${domain} contact form - ${mail}`, // Subject line
       // replyTo: sender,
       // plaintext body
@@ -102,19 +104,19 @@ module.exports.sendmail = (event = {}, context, callback) => {
     };
 
     // send mail with defined transport object
-    smtpTransport.sendMail(mailOptions, (err = {}) => {
-      response.statusCode = err.responseCode || 200;
-      response.body = JSON.stringify({
-        message: err.message || `Mail sent to ${receiver}`,
-        input: event,
-      });
-      response.headers = {
-        'Access-Control-Allow-Origin': '*', // Required for CORS support to work
-        'Access-Control-Allow-Credentials': true // Required for cookies, authorization headers with HTTPS
-      };
-      // if you don't want to use this transport object anymore, uncomment following line
+    smtpTransport.sendMail(mailOptions, (err) => {
       smtpTransport.close(); // shut down the connection pool, no more messages
+
+      response.statusCode = err === null ? 200 : err.responseCode;
+
+      response.body = JSON.stringify({
+        message: err === null ? `${Date()} | Mail sent to ${recipient}` : err.message
+      });
       callback(null, response);
     });
+
+    console.log(
+      `${Date()} | ${domain} | message ${mail} ${name} ${surname} ${message}`
+    );
   }
 };

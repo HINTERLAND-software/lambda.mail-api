@@ -18,10 +18,13 @@ plugins:
 
 provider:
   name: aws
-  runtime: nodejs6.10
+  # runtime: nodejs6.10
+  timeout: 50
   profile: jrdev
   region: eu-central-1
   stage: dev # you can override this via the CLI argument
+  environment: # Service wide environment variables
+      STAGE: ${opt:stage}
 
 functions:
   sendmail:
@@ -32,13 +35,3 @@ functions:
           path: sendmail
           method: post
           integration: lambda
-          cors:
-            origins:
-              - '*'
-            headers:
-              - Content-Type
-              - X-Amz-Date
-              - Authorization
-              - X-Api-Key
-              - X-Amz-Security-Token
-            allowCredentials: false

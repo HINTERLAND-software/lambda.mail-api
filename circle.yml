@@ -11,4 +11,4 @@ deployment:
   production:
     branch: production
     commands:
-      - npm run deploy-prod
+      - npm run deploy:prod

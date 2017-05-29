@@ -83,7 +83,9 @@ module.exports.sendmail = (event = {}, context, callback) => {
 
     // setup e-mail data with unicode symbols
     const mailOptions = {
+
       from: config.auth.user.replace('mg.', ''), // sender address
+
       to: recipient, // list of receivers
       subject: `NEW MAIL from ${configDomain} contact form - ${mail}`, // Subject line
       // replyTo: sender,

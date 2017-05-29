@@ -14,7 +14,6 @@ const { domains, self, mailgun } = require('./config.js');
  */
 const processTemplate = (replaceOptions, templatePath) => {
   const template = fs.readFileSync(path.join(__dirname, templatePath)).toString();
-  console.log({ template });
   return Object.keys(replaceOptions)
     .reduce(
       (tmp, key) => tmp.replace(new RegExp(`@@${key.toUpperCase()}`, 'g'),
@@ -27,13 +26,16 @@ const processTemplate = (replaceOptions, templatePath) => {
  * @param {string} senderDomain
  */
 const getSMTPconfig = (senderDomain) => {
-  const sender =
+  const config =
     domains.filter(({ domain }) => domain === senderDomain)[0] ||
     domains.filter(domain => domain.default)[0];
-  delete sender.domain;
-  delete sender.default;
 
-  return Object.assign({}, mailgun, sender);
+  const configDomain = config.domain;
+
+  delete config.domain;
+  delete config.default;
+
+  return { configDomain, config: Object.assign({}, mailgun, config) };
 };
 
 /**
@@ -65,7 +67,7 @@ module.exports.sendmail = (event = {}, context, callback) => {
     });
     callback(null, response);
   } else {
-    const config = getSMTPconfig(domain);
+    const { config, configDomain } = getSMTPconfig(domain);
     const smtpTransport = nodemailer.createTransport(config);
 
     const replaceOptions = {
@@ -83,7 +85,7 @@ module.exports.sendmail = (event = {}, context, callback) => {
     const mailOptions = {
       from: config.user.replace('mg.', ''), // sender address
       to: recipient, // list of receivers
-      subject: `NEW MAIL from ${domain} contact form - ${mail}`, // Subject line
+      subject: `NEW MAIL from ${configDomain} contact form - ${mail}`, // Subject line
       // replyTo: sender,
       // plaintext body
       text: processTemplate(replaceOptions, '/templates/mail.template.txt'),
@@ -110,7 +112,7 @@ module.exports.sendmail = (event = {}, context, callback) => {
 
     // log to cloudwatch
     console.log(
-      `${Date()} | ${domain} | message ${mail} ${name} ${surname} ${message}`
+      `${Date()} | ${configDomain} | message ${mail} ${name} ${surname} ${message}`
     );
   }
 };

@@ -2,6 +2,7 @@
 
 const nodemailer = require('nodemailer');
 const fs = require('fs');
+const path = require('path');
 
 const { domains, self, mailgun } = require('./config.js');
 
@@ -12,7 +13,8 @@ const { domains, self, mailgun } = require('./config.js');
  * @param {string} templatePath path to template
  */
 const processTemplate = (replaceOptions, templatePath) => {
-  const template = fs.readFileSync(templatePath);
+  const template = fs.readFileSync(path.join(__dirname, templatePath));
+  console.log({ template });
   return Object.keys(replaceOptions)
     .reduce(
       (tmp, key) => tmp.replace(new RegExp(`@@${key.toUpperCase()}`, 'g'),
@@ -84,13 +86,13 @@ module.exports.sendmail = (event = {}, context, callback) => {
       subject: `NEW MAIL from ${domain} contact form - ${mail}`, // Subject line
       // replyTo: sender,
       // plaintext body
-      text: processTemplate(replaceOptions, './templates/mail.template.txt'),
+      text: processTemplate(replaceOptions, '/templates/mail.template.txt'),
       // html body
       html: processTemplate(
         Object.assign({}, replaceOptions, {
           recom: recom ? processTemplate(replaceOptions,
-            './templates/recom.template.html') : recom
-        }), './templates/mail.template.html')
+            '/templates/recom.template.html') : recom
+        }), '/templates/mail.template.html')
     };
 
     // send mail with defined transport object

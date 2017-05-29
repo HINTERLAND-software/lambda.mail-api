@@ -35,7 +35,7 @@ const getSMTPconfig = (senderDomain) => {
   delete config.domain;
   delete config.default;
 
-  return { configDomain, config: Object.assign({}, mailgun, config) };
+  return { configDomain, config: Object.assign({}, mailgun, { auth: Object.assign({}, config) }) };
 };
 
 /**
@@ -83,7 +83,7 @@ module.exports.sendmail = (event = {}, context, callback) => {
 
     // setup e-mail data with unicode symbols
     const mailOptions = {
-      from: config.user.replace('mg.', ''), // sender address
+      from: config.auth.user.replace('mg.', ''), // sender address
       to: recipient, // list of receivers
       subject: `NEW MAIL from ${configDomain} contact form - ${mail}`, // Subject line
       // replyTo: sender,

@@ -13,7 +13,7 @@ const { domains, self, mailgun } = require('./config.js');
  * @param {string} templatePath path to template
  */
 const processTemplate = (replaceOptions, templatePath) => {
-  const template = fs.readFileSync(path.join(__dirname, templatePath));
+  const template = fs.readFileSync(path.join(__dirname, templatePath)).toString();
   console.log({ template });
   return Object.keys(replaceOptions)
     .reduce(

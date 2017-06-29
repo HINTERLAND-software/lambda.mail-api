@@ -7,7 +7,7 @@
     "author": "jroehl",
     "license": "MIT",
     "scripts": {
-        "test": "eslint **/*.js && node handler.js",
+        "test": "eslint **/*.js && node handler.js && jest",
         "deploy": "npm test && serverless deploy -s dev",
         "deploy:prod": "npm test && serverless deploy -s production",
         "logs": "serverless logs -s dev -f sendmail",
@@ -19,6 +19,8 @@
         "eslint": "^3.18.0",
         "eslint-config-airbnb-base": "^11.1.1",
         "eslint-plugin-import": "^2.2.0",
+        "eslint-plugin-jest": "^20.0.3",
+        "jest": "^20.0.4",
         "serverless": "^1.14.0",
         "serverless-plugin-include-dependencies": "^2.1.2"
     },

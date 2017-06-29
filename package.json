@@ -7,7 +7,8 @@
     "author": "jroehl",
     "license": "MIT",
     "scripts": {
-        "test": "eslint **/*.js && node handler.js && jest",
+        "test": "eslint **/*.js && node handler.js && npm run jest",
+        "jest": "jest",
         "deploy": "serverless deploy -s dev",
         "deploy:prod": "serverless deploy -s production",
         "logs": "serverless logs -s dev -f sendmail",
@@ -27,5 +28,16 @@
     },
     "dependencies": {
         "nodemailer": "^3.1.8"
-    }
+    },
+    "jest": {
+    "verbose": true,
+    "automock": false,
+    "collectCoverage": true,
+    "coverageDirectory": "./coverage",
+    "coverageReporters": [
+      "json",
+      "text",
+      "html"
+    ]
+  }
 }

@@ -8,12 +8,13 @@
     "license": "MIT",
     "scripts": {
         "test": "eslint **/*.js && node handler.js && jest",
-        "deploy": "npm test && serverless deploy -s dev",
-        "deploy:prod": "npm test && serverless deploy -s production",
+        "deploy": "serverless deploy -s dev",
+        "deploy:prod": "serverless deploy -s production",
         "logs": "serverless logs -s dev -f sendmail",
         "logs:prod": "serverless logs -s production -f sendmail",
         "invoke": "serverless invoke -s dev -f sendmail -p tests/data.json",
-        "invoke-prod": "serverless invoke -s production -f sendmail -p tests/data.json"
+        "invoke:local": "serverless invoke local -s dev --f sendmail -p tests/data.json",
+        "invoke:prod": "serverless invoke -s production -f sendmail -p tests/data.json"
     },
     "devDependencies": {
         "eslint": "^3.18.0",

@@ -1,5 +1,5 @@
 {
-    "name": "jr-mailer",
+    "name": "jr-api-mail",
     "version": "0.0.1",
     "description": "Serverless aws lambda endpoint to deliver mails",
     "main": "handler.js",

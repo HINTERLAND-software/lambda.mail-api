@@ -11,7 +11,7 @@
 #
 # Happy Coding!
 
-service: jr-mail-api
+service: jr-api-mail
 
 plugins:
   - serverless-plugin-include-dependencies

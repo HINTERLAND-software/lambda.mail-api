@@ -13,9 +13,9 @@
         "deploy:prod": "serverless deploy -s production",
         "logs": "serverless logs -s dev -f sendmail",
         "logs:prod": "serverless logs -s production -f sendmail",
-        "invoke": "serverless invoke -s dev -f sendmail -p tests/data.json",
-        "invoke:local": "serverless invoke local -s dev --f sendmail -p tests/data.json",
-        "invoke:prod": "serverless invoke -s production -f sendmail -p tests/data.json"
+        "invoke": "serverless invoke -s dev -f sendmail -p test/data.json",
+        "invoke:local": "serverless invoke local -s dev --f sendmail -p test/data.json",
+        "invoke:prod": "serverless invoke -s production -f sendmail -p test/data.json"
     },
     "devDependencies": {
         "eslint": "^3.18.0",
@@ -30,14 +30,14 @@
         "nodemailer": "^3.1.8"
     },
     "jest": {
-    "verbose": true,
-    "automock": false,
-    "collectCoverage": true,
-    "coverageDirectory": "./coverage",
-    "coverageReporters": [
-      "json",
-      "text",
-      "html"
-    ]
-  }
+        "verbose": true,
+        "automock": false,
+        "collectCoverage": true,
+        "coverageDirectory": "./coverage",
+        "coverageReporters": [
+            "json",
+            "text",
+            "html"
+        ]
+    }
 }

@@ -19,7 +19,7 @@ plugins:
 provider:
   name: aws
   runtime: nodejs6.10
-  profile: jrdev
+  # profile: jrdev
   region: eu-central-1
   stage: dev # you can override this via the CLI argument
   environment: # Service wide environment variables

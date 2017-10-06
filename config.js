@@ -6,6 +6,11 @@ const domains = [{
   pass: 'nmFPq8HpzezN9y=)wzXaMzbg'
 },
 {
+  domain: 'vh-gruppe.de',
+  user: 'no-reply@mg.vh-gruppe.de',
+  pass: ',FpzbL=fatFQ49Ci'
+},
+{
   default: true,
   domain: 'johannroehl.de',
   user: 'no-reply@johannroehl.de',

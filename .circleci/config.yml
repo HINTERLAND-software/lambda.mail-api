@@ -51,7 +51,9 @@ jobs:
           key: checkout-{{ .Revision }}
 
       - restore_cache:
-          key: node-modules-{{ checksum "package.json" }}
+          keys:
+            - node-modules-{{ checksum "package.json" }}
+            - node-modules-
 
       - run: sudo apt-get install python-pip python-dev
 

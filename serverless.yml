@@ -21,3 +21,15 @@ functions:
       - http:
           path: sendmail
           method: post
+          cors:
+            origins:
+              - 'http://localhost:3000'
+              - 'https://heidpartner.com'
+              - 'https://vh-gruppe.de'
+              - 'https://johannroehl.de'
+            headers:
+              - Content-Type
+              - X-Amz-Date
+              - Authorization
+              - X-Api-Key
+              - X-Amz-Security-Token

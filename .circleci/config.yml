@@ -38,7 +38,9 @@ jobs:
           key: checkout-{{ .Revision }}
 
       - restore_cache:
-          key: node-modules-{{ checksum "package.json" }}
+          keys:
+            - node-modules-{{ checksum "package.json" }}
+            - node-modules-
 
       - run: npm test
 

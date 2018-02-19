@@ -22,7 +22,7 @@ jobs:
       - restore_cache:
           keys:
             - node-modules-{{ checksum "package.json" }}
-            - node-modules
+            - node-modules-
 
       - run: npm install
 

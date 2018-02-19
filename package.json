@@ -1,43 +1,36 @@
 {
-    "name": "jr-api-mail",
-    "version": "0.0.1",
-    "description": "Serverless aws lambda endpoint to deliver mails",
-    "main": "handler.js",
-    "private": true,
-    "author": "jroehl",
-    "license": "MIT",
-    "scripts": {
-        "test": "eslint **/*.js && node handler.js && npm run jest",
-        "jest": "jest",
-        "deploy": "serverless deploy -s dev",
-        "deploy:prod": "serverless deploy -s production",
-        "logs": "serverless logs -s dev -f sendmail",
-        "logs:prod": "serverless logs -s production -f sendmail",
-        "invoke": "serverless invoke -s dev -f sendmail -p test/data.json",
-        "invoke:local": "serverless invoke local -s dev --f sendmail -p test/data.json",
-        "invoke:prod": "serverless invoke -s production -f sendmail -p test/data.json"
-    },
-    "devDependencies": {
-        "eslint": "^3.18.0",
-        "eslint-config-airbnb-base": "^11.1.1",
-        "eslint-plugin-import": "^2.2.0",
-        "eslint-plugin-jest": "^20.0.3",
-        "jest": "^20.0.4",
-        "serverless": "^1.14.0",
-        "serverless-plugin-include-dependencies": "^2.1.2"
-    },
-    "dependencies": {
-        "nodemailer": "^3.1.8"
-    },
-    "jest": {
-        "verbose": true,
-        "automock": false,
-        "collectCoverage": true,
-        "coverageDirectory": "./coverage",
-        "coverageReporters": [
-            "json",
-            "text",
-            "html"
-        ]
-    }
+  "name": "jr-api-mail",
+  "version": "1.0.0",
+  "description": "Serverless aws lambda endpoint to deliver mails",
+  "main": "handler.js",
+  "private": true,
+  "author": "jroehl",
+  "license": "MIT",
+  "scripts": {
+    "test": "eslint **/*.js && node handler.js && npm run jest",
+    "jest": "jest",
+    "deploy": "serverless deploy -s dev",
+    "deploy:prod": "serverless deploy -s production",
+    "logs": "serverless logs -s dev -f sendmail",
+    "logs:prod": "serverless logs -s production -f sendmail"
+  },
+  "devDependencies": {
+    "eslint": "^3.18.0",
+    "eslint-config-airbnb-base": "^11.1.1",
+    "eslint-plugin-import": "^2.2.0",
+    "eslint-plugin-jest": "^20.0.3",
+    "jest": "^20.0.4",
+    "serverless": "^1.14.0",
+    "serverless-plugin-include-dependencies": "^2.1.2"
+  },
+  "dependencies": {
+    "nodemailer": "^3.1.8"
+  },
+  "jest": {
+    "verbose": true,
+    "automock": false,
+    "collectCoverage": true,
+    "coverageDirectory": "./coverage",
+    "coverageReporters": ["json", "text", "html"]
+  }
 }

@@ -4,6 +4,7 @@ service: api-mail
 
 plugins:
   - serverless-plugin-include-dependencies
+  - serverless-plugin-aws-alerts
 
 provider:
   name: aws
@@ -11,13 +12,40 @@ provider:
   memorySize: 128
   region: eu-central-1
   stage: dev # you can override this via the CLI argument
+  apiKeys:
+    - ${self:service}-api-key
+  usagePlan:
+    quota:
+      limit: 2000
+      period: MONTH
+    throttle:
+      burstLimit: 10
+      rateLimit: 5
   environment: # Service wide environment variables
     STAGE: ${opt:stage}
+
+custom:
+  alerts:
+    topics:
+      alarm:
+        topic: arn:aws:sns:eu-central-1:009255630476:alert-Topic-N47IM5J07MP7
+    definitions:  # these defaults are merged with your definitions
+      functionInvocations:
+        threshold: 50 # override threshold
+      functionDuration:
+        threshold: 2000 # override threshold
+    alarms:
+      - functionThrottles
+      - functionErrors
+      - functionInvocations
+      - functionDuration
 
 functions:
   sendmail:
     handler: handler.sendmail
     events:
       - http:
+          private: true
+          cors: true
           path: sendmail
           method: post

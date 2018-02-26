@@ -13,7 +13,7 @@ provider:
   region: eu-central-1
   stage: dev # you can override this via the CLI argument
   apiKeys:
-    - ${self:service}-api-key
+    - ${self:service}-key-${opt:stage, self:provider.stage}
   usagePlan:
     quota:
       limit: 2000

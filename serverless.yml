@@ -5,6 +5,7 @@ service: api-mail
 plugins:
   - serverless-plugin-include-dependencies
   - serverless-plugin-aws-alerts
+  - serverless-domain-manager
 
 provider:
   name: aws
@@ -13,7 +14,7 @@ provider:
   region: eu-central-1
   stage: dev # you can override this via the CLI argument
   apiKeys:
-    - ${self:service}-key-${opt:stage, self:provider.stage}
+    - ${self:service}-key-${self:custom.stage}
   usagePlan:
     quota:
       limit: 2000
@@ -22,9 +23,20 @@ provider:
       burstLimit: 10
       rateLimit: 5
   environment: # Service wide environment variables
-    STAGE: ${opt:stage}
+    STAGE: ${self:custom.stage}
 
 custom:
+  # https://github.com/amplify-education/serverless-domain-manager
+  stage: ${opt:stage, self:provider.stage}
+  domains:
+    production: lapi.johannroehl.de
+    dev: dev-lapi.johannroehl.de
+  customDomain:
+    basePath: mail
+    domainName: ${self:custom.domains.${self:custom.stage}}
+    stage: ${self:custom.stage}
+    createRoute53Record: false
+  # https://github.com/ACloudGuru/serverless-plugin-aws-alerts
   alerts:
     topics:
       alarm:
@@ -47,5 +59,5 @@ functions:
       - http:
           private: true
           cors: true
-          path: sendmail
+          path: send
           method: post

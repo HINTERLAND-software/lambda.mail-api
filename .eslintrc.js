@@ -4,10 +4,8 @@ module.exports = {
     'comma-dangle': 'off',
     strict: 'off'
   },
-  plugins: [
-    "jest"
-  ],
+  plugins: ['jest'],
   env: {
-    "jest/globals": true
+    'jest/globals': true
   }
 };

@@ -27,8 +27,7 @@ module.exports.sendmail = (event, context, callback) => {
   }
 
   // wrong recipient
-  const invalidRecipient = ![...domains, { domain: self }].find(({ domain: d }) =>
-    d.includes(recipient));
+  const invalidRecipient = !domains.find(({ domain: d }) => d === recipient.split('@')[1]);
   if (invalidRecipient) {
     return response(400, `Invalid recipient: "${recipient}"`, event);
   }

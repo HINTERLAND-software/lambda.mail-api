@@ -1,7 +1,7 @@
 const path = require('path');
 
 module.exports = {
-  self: 'roehl.johann@gmail.com',
+  self: 'admin+mailer@johannroehl.de',
   domains: [
     {
       domain: 'heidpartner.com',

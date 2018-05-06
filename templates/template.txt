@@ -1,0 +1,6 @@
+** *|_HEADER_|*
+------------------------------------------------------------
+
+*|_PARTIALS_|*
+
+Copyright © 2018 JR Photography & Development

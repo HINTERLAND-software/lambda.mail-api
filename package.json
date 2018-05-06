@@ -1,6 +1,6 @@
 {
   "name": "api-mail",
-  "version": "1.5.0",
+  "version": "2.0.0",
   "description": "Serverless aws lambda endpoint to deliver mails",
   "main": "handler.js",
   "private": true,
@@ -8,6 +8,7 @@
   "license": "MIT",
   "scripts": {
     "test": "eslint **/*.js && node handler.js && npm run jest",
+    "start:offline": "serverless offline --port 6060 start",
     "jest": "jest",
     "deploy": "serverless deploy -s dev",
     "deploy:prod": "serverless deploy -s production",
@@ -15,29 +16,26 @@
     "logs:prod": "serverless logs -s production -f sendmail"
   },
   "devDependencies": {
-    "eslint": "^3.18.0",
-    "eslint-config-airbnb-base": "^11.1.1",
-    "eslint-plugin-import": "^2.2.0",
-    "eslint-plugin-jest": "^20.0.3",
-    "jest": "^20.0.4",
-    "jest-cli": "^22.4.2",
-    "serverless": "^1.14.0",
-    "serverless-domain-manager": "^2.3.3",
+    "eslint": "^4.19.1",
+    "eslint-config-airbnb-base": "^12.1.0",
+    "eslint-plugin-import": "^2.11.0",
+    "eslint-plugin-jest": "^21.15.1",
+    "jest": "^22.4.3",
+    "jest-cli": "^22.4.3",
+    "serverless": "^1.27.1",
+    "serverless-domain-manager": "^2.3.6",
+    "serverless-offline": "^3.20.3",
     "serverless-plugin-aws-alerts": "^1.2.4",
-    "serverless-plugin-include-dependencies": "^2.1.2"
+    "serverless-plugin-include-dependencies": "^3.1.0"
   },
   "dependencies": {
-    "nodemailer": "^3.1.8"
+    "nodemailer": "^4.6.4"
   },
   "jest": {
     "verbose": true,
     "automock": false,
     "collectCoverage": true,
     "coverageDirectory": "./coverage",
-    "coverageReporters": [
-      "json",
-      "text",
-      "html"
-    ]
+    "coverageReporters": ["json", "text", "html"]
   }
 }

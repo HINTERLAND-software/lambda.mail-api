@@ -36,6 +36,10 @@
     "automock": false,
     "collectCoverage": true,
     "coverageDirectory": "./coverage",
-    "coverageReporters": ["json", "text", "html"]
+    "coverageReporters": [
+      "json",
+      "text",
+      "html"
+    ]
   }
 }

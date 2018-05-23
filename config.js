@@ -29,7 +29,7 @@ module.exports = {
   },
   fields: {
     invalid: ['honeypot'],
-    required: ['mail', 'name', 'message']
+    required: ['mail', 'name', 'message', 'accept-disclaimer']
   },
   templates: {
     html: {
@@ -57,6 +57,7 @@ module.exports = {
       reply: '(Oder einfach die "antworten" Funktion des Email Programms nutzen)',
       replybutton: 'Antworten',
       locale: 'Sprache',
+      'accept-disclaimer': 'Zustimmung Datenschutz erteilt',
       by: 'von'
     },
     en: {
@@ -74,6 +75,7 @@ module.exports = {
       reply: '(Or just hit "reply" in your email client)',
       replybutton: 'Reply',
       locale: 'Language',
+      'accept-disclaimer': 'Accepted data privacy disclaimer',
       by: 'by'
     }
   }

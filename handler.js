@@ -2,7 +2,9 @@
 
 const { callbackHandler, getSMTPconfig } = require('./lib/misc');
 const SmtpTransport = require('./lib/smtpmailer');
-const { self, domains, fields } = require('./config');
+const {
+  self, domains, fields, forced
+} = require('./config');
 
 const sendmail = require('./lib/sendmail');
 
@@ -15,7 +17,10 @@ module.exports.sendmail = (event, context, callback) => {
   } = payload;
 
   const recipient =
-    process.env.STAGE === 'production' || process.env.NODE_ENV === 'test' ? receiver : self;
+    (process.env.STAGE === 'production' || process.env.NODE_ENV === 'test') &&
+    !forced.find(f => receiver.includes(f))
+      ? receiver
+      : self;
 
   const keys = { ...rest, name: `${name}${surname ? ` ${surname}` : ''}` };
 

@@ -1,6 +1,7 @@
 const path = require('path');
 
 module.exports = {
+  forced: ['@johannroehl.de', 'roehl.johann@gmail.com'],
   self: 'admin+mailer@johannroehl.de',
   domains: [
     {
@@ -57,8 +58,11 @@ module.exports = {
       reply: '(Oder einfach die "antworten" Funktion des Email Programms nutzen)',
       replybutton: 'Antworten',
       locale: 'Sprache',
-      'accept-disclaimer': 'Zustimmung Datenschutz erteilt',
-      by: 'von'
+      'dataprivacy-disclaimer': 'Zustimmung Datenschutz erteilt',
+      'processing-disclaimer': 'Zustimmung Datenverarbeitung erteilt',
+      by: 'von',
+      true: 'Ja',
+      false: 'Nein'
     },
     en: {
       name: 'Name',
@@ -75,8 +79,11 @@ module.exports = {
       reply: '(Or just hit "reply" in your email client)',
       replybutton: 'Reply',
       locale: 'Language',
-      'accept-disclaimer': 'Accepted data privacy disclaimer',
-      by: 'by'
+      'dataprivacy-disclaimer': 'Accepted data privacy disclaimer',
+      'processing-disclaimer': 'Accepted data processing disclaimer',
+      by: 'by',
+      true: 'Yes',
+      false: 'No'
     }
   }
 };

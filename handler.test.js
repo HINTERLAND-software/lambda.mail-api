@@ -5,8 +5,16 @@ jest.mock('./lib/misc', () => ({
   getSMTPconfig: () => ({ config: {} })
 }));
 
-jest.mock('./lib/sendmail', () => () =>
-  Promise.resolve({ statusCode: 200, message: 'yay', result: {} }));
+jest.mock('./lib/sendmail', () => (smtpConfig, smtpTransport, keys, recipient) =>
+  Promise.resolve({
+    statusCode: 200,
+    message: 'yay',
+    result: {
+      smtpConfig,
+      keys,
+      recipient
+    }
+  }));
 
 describe('handler', () => {
   test('sent error message', (done) => {
@@ -61,7 +69,61 @@ describe('handler', () => {
       (statusCode, message, result) => {
         expect(statusCode).toBe(200);
         expect(message).toBe('yay');
-        expect(result).toBeDefined();
+        expect(result).toEqual({
+          smtpConfig: { config: {} },
+          keys: {
+            message: 'test run',
+            mail: 'foo@bar.com',
+            'dataprivacy-disclaimer': true,
+            'processing-disclaimer': true,
+            name: 'bar foo'
+          },
+          recipient: 'admin+mailer@johannroehl.de'
+        });
+        done();
+      }
+    );
+  });
+  test('should return successfully with passed through mail', (done) => {
+    sendmail(
+      {
+        body: {
+          receiver: 'bar@heidpartner.com',
+          message: 'test run',
+          name: 'bar',
+          surname: 'foo',
+          mail: 'foo@bar.com',
+          'dataprivacy-disclaimer': true,
+          'processing-disclaimer': true
+        }
+      },
+      undefined,
+      (statusCode, message, result) => {
+        expect(statusCode).toBe(200);
+        expect(message).toBe('yay');
+        expect(result.recipient).toBe('bar@heidpartner.com');
+        done();
+      }
+    );
+  });
+  test('should return successfully with forced mail', (done) => {
+    sendmail(
+      {
+        body: {
+          receiver: 'roehl.johann@gmail.com',
+          message: 'test run',
+          name: 'bar',
+          surname: 'foo',
+          mail: 'foo@bar.com',
+          'dataprivacy-disclaimer': true,
+          'processing-disclaimer': true
+        }
+      },
+      undefined,
+      (statusCode, message, result) => {
+        expect(statusCode).toBe(200);
+        expect(message).toBe('yay');
+        expect(result.recipient).toBe('admin+mailer@johannroehl.de');
         done();
       }
     );

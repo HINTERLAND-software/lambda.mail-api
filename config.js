@@ -29,7 +29,7 @@ module.exports = {
   },
   fields: {
     invalid: ['honeypot'],
-    required: ['mail', 'name', 'message', 'accept-disclaimer']
+    required: ['mail', 'name', 'message', 'dataprivacy-disclaimer', 'processing-disclaimer']
   },
   templates: {
     html: {

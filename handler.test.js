@@ -12,14 +12,14 @@ describe('handler', () => {
   test('sent error message', (done) => {
     sendmail({ body: {} }, undefined, (statusCode, message) => {
       expect(statusCode).toBe(400);
-      expect(message).toBe('No "mail", "name", "message", "accept-disclaimer" field specified');
+      expect(message).toBe('No "mail", "name", "message", "dataprivacy-disclaimer", "processing-disclaimer" field specified');
       done();
     });
   });
   test('sent different error message', (done) => {
     sendmail({ body: { message: 'foo', name: 'bar' } }, undefined, (statusCode, message) => {
       expect(statusCode).toBe(400);
-      expect(message).toBe('No "mail", "accept-disclaimer" field specified');
+      expect(message).toBe('No "mail", "dataprivacy-disclaimer", "processing-disclaimer" field specified');
       done();
     });
   });
@@ -53,7 +53,8 @@ describe('handler', () => {
           name: 'bar',
           surname: 'foo',
           mail: 'foo@bar.com',
-          'accept-disclaimer': true
+          'dataprivacy-disclaimer': true,
+          'processing-disclaimer': true
         }
       },
       undefined,

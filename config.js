@@ -58,11 +58,10 @@ module.exports = {
       reply: '(Oder einfach die "antworten" Funktion des Email Programms nutzen)',
       replybutton: 'Antworten',
       locale: 'Sprache',
-      'dataprivacy-disclaimer': 'Zustimmung Datenschutz erteilt',
-      'processing-disclaimer': 'Zustimmung Datenverarbeitung erteilt',
-      by: 'von',
-      true: 'Ja',
-      false: 'Nein'
+      language: 'Sprache',
+      'dataprivacy-disclaimer': { key: 'Zustimmung Datenschutz erteilt', value: 'Ja' },
+      'processing-disclaimer': { key: 'Zustimmung Datenverarbeitung erteilt', value: 'Ja' },
+      by: 'von'
     },
     en: {
       name: 'Name',
@@ -79,8 +78,9 @@ module.exports = {
       reply: '(Or just hit "reply" in your email client)',
       replybutton: 'Reply',
       locale: 'Language',
-      'dataprivacy-disclaimer': 'Accepted data privacy disclaimer',
-      'processing-disclaimer': 'Accepted data processing disclaimer',
+      language: 'Language',
+      'dataprivacy-disclaimer': { key: 'Accepted data privacy disclaimer', value: 'Yes' },
+      'processing-disclaimer': { key: 'Accepted data processing disclaimer', value: 'Yes' },
       by: 'by',
       true: 'Yes',
       false: 'No'

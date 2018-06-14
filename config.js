@@ -15,6 +15,11 @@ module.exports = {
       pass: ',FpzbL=fatFQ49Ci'
     },
     {
+      domain: 'ivm-meyer.de',
+      user: 'no-reply@mg.ivm-meyer.de',
+      pass: 'f}D6DtDGJFY9aPpLBThmcFa6kC.'
+    },
+    {
       fallback: true,
       domain: 'johannroehl.de',
       user: 'no-reply@johannroehl.de',

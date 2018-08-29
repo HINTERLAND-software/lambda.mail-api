@@ -20,6 +20,11 @@ module.exports = {
       pass: 'f}D6DtDGJFY9aPpLBThmcFa6kC.'
     },
     {
+      domain: 'strassburg-passage.de',
+      user: 'no-reply@mg.strassburg-passage.de',
+      pass: 'oYRCpn]2JU*Gcg4T'
+    },
+    {
       fallback: true,
       domain: 'johannroehl.de',
       user: 'no-reply@johannroehl.de',

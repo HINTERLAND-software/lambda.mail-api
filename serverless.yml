@@ -43,10 +43,16 @@ custom:
       alarm:
         topic: arn:aws:sns:eu-central-1:009255630476:alert-Topic-N47IM5J07MP7
     definitions:  # these defaults are merged with your definitions
+      functionThrottles:
+        treatMissingData: notBreaching
+      functionErrors:
+        treatMissingData: notBreaching
       functionInvocations:
         threshold: 50 # override threshold
+        treatMissingData: notBreaching
       functionDuration:
         threshold: 2000 # override threshold
+        treatMissingData: notBreaching
     alarms:
       - functionThrottles
       - functionErrors

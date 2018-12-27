@@ -14,6 +14,7 @@ provider:
   memorySize: 128
   region: eu-central-1
   stage: dev # you can override this via the CLI argument
+  logRetentionInDays: ${self:custom.retention.${self:custom.stage}} # Set the default RetentionInDays for a CloudWatch LogGroup
   apiKeys:
     - ${self:service}-key-${self:custom.stage}
   usagePlan:
@@ -29,6 +30,9 @@ provider:
 custom:
   # https://github.com/amplify-education/serverless-domain-manager
   stage: ${opt:stage, self:provider.stage}
+  retention:
+    production: 365 # 1 year
+    dev: 30 # 1 month
   domains:
     production: lapi.johannroehl.de
     dev: dev-lapi.johannroehl.de
@@ -42,7 +46,7 @@ custom:
     topics:
       alarm:
         topic: arn:aws:sns:eu-central-1:009255630476:alert-Topic-N47IM5J07MP7
-    definitions:  # these defaults are merged with your definitions
+    definitions: # these defaults are merged with your definitions
       functionThrottles:
         treatMissingData: notBreaching
       functionErrors:

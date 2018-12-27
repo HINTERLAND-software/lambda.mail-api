@@ -1,4 +1,4 @@
-** Neuer Kontaktformular Eintrag
+** Neuer Kontaktformular Eintrag 
 ------------------------------------------------------------
 
  
@@ -11,6 +11,3 @@ foo
 ------------------------------------------------------------
 
 bar
-
-
-Copyright © 2018 JR Photography & Development

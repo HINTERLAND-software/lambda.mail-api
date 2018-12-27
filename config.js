@@ -1,5 +1,7 @@
 const path = require('path');
 
+const copyright = `© 2013 - ${new Date().getFullYear()} jr | development`;
+
 module.exports = {
   forced: ['@johannroehl.de', 'roehl.johann@gmail.com'],
   self: 'admin+mailer@johannroehl.de',
@@ -8,6 +10,11 @@ module.exports = {
       domain: 'heidpartner.com',
       user: 'no-reply@mg.heidpartner.com',
       pass: 'nmFPq8HpzezN9y=)wzXaMzbg'
+    },
+    {
+      domain: 'hasu-bau.de',
+      user: 'no-reply@mg.hasu-bau.de',
+      pass: ''
     },
     {
       domain: 'vh-gruppe.de',
@@ -28,7 +35,11 @@ module.exports = {
       fallback: true,
       domain: 'johannroehl.de',
       user: 'no-reply@johannroehl.de',
-      pass: 'KtnGKUBd3RLgPyHgRoyfikjE'
+      pass: 'KtnGKUBd3RLgPyHgRoyfikjE',
+      validationFields: {
+        invalid: ['honeypot'],
+        required: ['mail', 'name', 'message', 'dataprivacy-disclaimer', 'processing-disclaimer']
+      }
     }
   ],
   mailgun: {
@@ -38,7 +49,7 @@ module.exports = {
       rejectUnauthorized: false
     }
   },
-  fields: {
+  defaultValidationFields: {
     invalid: ['honeypot'],
     required: ['mail', 'name', 'message', 'dataprivacy-disclaimer', 'processing-disclaimer']
   },
@@ -71,7 +82,8 @@ module.exports = {
       language: 'Sprache',
       'dataprivacy-disclaimer': { key: 'Zustimmung Datenschutz erteilt', value: 'Ja' },
       'processing-disclaimer': { key: 'Zustimmung Datenverarbeitung erteilt', value: 'Ja' },
-      by: 'von'
+      by: 'von',
+      copyright
     },
     en: {
       name: 'Name',
@@ -93,7 +105,8 @@ module.exports = {
       'processing-disclaimer': { key: 'Accepted data processing disclaimer', value: 'Yes' },
       by: 'by',
       true: 'Yes',
-      false: 'No'
+      false: 'No',
+      copyright
     }
   }
 };

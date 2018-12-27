@@ -2,7 +2,13 @@ const { sendmail } = require('./handler');
 
 jest.mock('./lib/misc', () => ({
   callbackHandler: cb => cb,
-  getSMTPconfig: () => ({ config: {} })
+  getSMTPconfig: () => ({
+    config: {},
+    validationFields: {
+      invalid: ['honeypot'],
+      required: ['mail', 'name', 'message', 'dataprivacy-disclaimer', 'processing-disclaimer']
+    }
+  })
 }));
 
 jest.mock('./lib/sendmail', () => (smtpConfig, smtpTransport, keys, recipient) =>
@@ -70,15 +76,27 @@ describe('handler', () => {
         expect(statusCode).toBe(200);
         expect(message).toBe('yay');
         expect(result).toEqual({
-          smtpConfig: { config: {} },
           keys: {
-            message: 'test run',
-            mail: 'foo@bar.com',
             'dataprivacy-disclaimer': true,
-            'processing-disclaimer': true,
-            name: 'bar foo'
+            mail: 'foo@bar.com',
+            message: 'test run',
+            name: 'bar foo',
+            'processing-disclaimer': true
           },
-          recipient: 'admin+mailer@johannroehl.de'
+          recipient: 'admin+mailer@johannroehl.de',
+          smtpConfig: {
+            config: {},
+            validationFields: {
+              invalid: ['honeypot'],
+              required: [
+                'mail',
+                'name',
+                'message',
+                'dataprivacy-disclaimer',
+                'processing-disclaimer'
+              ]
+            }
+          }
         });
         done();
       }

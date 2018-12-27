@@ -1,4 +1,4 @@
-** Neuer Kontaktformular Eintrag
+** Neuer Kontaktformular Eintrag (johannroehl.de)
 ------------------------------------------------------------
 
  
@@ -21,6 +21,3 @@ foo
 ------------------------------------------------------------
 
 foo@bar.com
-
-
-Copyright © 2018 JR Photography & Development

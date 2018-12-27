@@ -2,9 +2,7 @@
 
 const { callbackHandler, getSMTPconfig } = require('./lib/misc');
 const SmtpTransport = require('./lib/smtpmailer');
-const {
-  self, domains, fields, forced
-} = require('./config');
+const { self, domains, forced } = require('./config');
 
 const sendmail = require('./lib/sendmail');
 
@@ -22,10 +20,12 @@ module.exports.sendmail = (event, context, callback) => {
       ? receiver
       : self;
 
-  const keys = { ...rest, name: `${name}${surname ? ` ${surname}` : ''}` };
+  const keys = { ...rest, name: `${name} ${surname || ''}` };
 
+  const smtpConfig = getSMTPconfig(domain);
+  const { validationFields, config } = smtpConfig;
   // honeypot triggered
-  const invalidField = fields.invalid.filter(field => payload[field]);
+  const invalidField = validationFields.invalid.filter(field => payload[field]);
   if (invalidField.length) {
     console.log(`Invalid field "${invalidField.join('", "')}" used`);
     return response(200, 'Honey mail sent');
@@ -37,15 +37,13 @@ module.exports.sendmail = (event, context, callback) => {
     return response(400, `Invalid recipient: "${recipient}"`, event);
   }
 
-  const requiredFields = fields.required.filter(field => !payload[field]);
+  const requiredFields = validationFields.required.filter(field => !payload[field]);
   if (requiredFields.length) {
     return response(400, `No "${requiredFields.join('", "')}" field specified`);
   }
 
-  const smtpConfig = getSMTPconfig(domain);
-  const smtpTransport = new SmtpTransport(smtpConfig.config);
-
-  sendmail(smtpConfig, smtpTransport, keys, recipient)
+  const smtpTransport = new SmtpTransport(config);
+  return sendmail(smtpConfig, smtpTransport, keys, recipient)
     .then(({ statusCode, message, result }) => response(statusCode, message, result))
     .catch(err => response(err.statusCode || 400, err.message, err));
 };

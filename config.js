@@ -14,7 +14,7 @@ module.exports = {
     {
       domain: 'hasu-bau.de',
       user: 'no-reply@mg.hasu-bau.de',
-      pass: ''
+      pass: 'pyNyxd%dwHM2js4Gmz/yXkzYQz'
     },
     {
       domain: 'vh-gruppe.de',

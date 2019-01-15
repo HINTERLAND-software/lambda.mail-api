@@ -25,10 +25,17 @@ provider:
       rateLimit: 5
   environment: # Service wide environment variables
     STAGE: ${self:custom.stage}
+    TEMPLATE: ${self:custom.template}
+  iamRoleStatements:
+    - Effect: 'Allow'
+      Action:
+        - 'ses:SendEmail'
+      Resource: '*'
 
 custom:
   # https://github.com/amplify-education/serverless-domain-manager
   stage: ${opt:stage, self:provider.stage}
+  template: ${self:service}-template
   domains:
     production: lapi.johannroehl.de
     dev: dev-lapi.johannroehl.de
@@ -42,7 +49,7 @@ custom:
     topics:
       alarm:
         topic: arn:aws:sns:eu-central-1:009255630476:alert-Topic-N47IM5J07MP7
-    definitions:  # these defaults are merged with your definitions
+    definitions: # these defaults are merged with your definitions
       functionThrottles:
         treatMissingData: notBreaching
       functionErrors:
@@ -51,7 +58,7 @@ custom:
         threshold: 50 # override threshold
         treatMissingData: notBreaching
       functionDuration:
-        threshold: 2000 # override threshold
+        threshold: 4000 # override threshold
         treatMissingData: notBreaching
     alarms:
       - functionThrottles

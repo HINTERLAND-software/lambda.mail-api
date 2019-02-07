@@ -36,5 +36,3 @@ aws ses create-configuration-set --configuration-set Name=$CS_NAME --region $AWS
 aws ses create-configuration-set-event-destination --configuration-set-name $CS_NAME --region $AWS_REGION --event-destination "{\"Name\": \"ses-sns-renderingfailure\", \"Enabled\": true, \"MatchingEventTypes\": [\"renderingFailure\", \"reject\", \"bounce\", \"complaint\"], \"SNSDestination\": {\"TopicARN\": \"$TOPIC_ARN\"}}"
 
 ```
-
-1. Verify email `aws ses verify-email-identity --email-address user@example.com`

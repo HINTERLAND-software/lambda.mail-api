@@ -1,7 +1,7 @@
 const translations = require('./translations');
 
 module.exports = {
-  forced: ['@johannroehl.de', 'roehl.johann@gmail.com'],
+  forced: ['@johannroehl.de', 'roehl.johann@gmail.com'], // receiving addresses that force the mail to be send to admin+mailer@johannroehl.de
   domains: [
     {
       domain: 'johannroehl.de',

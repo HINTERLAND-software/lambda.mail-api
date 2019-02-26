@@ -15,21 +15,20 @@ const validateRequest = (config, body) => {
   if (invalidField.length) {
     error.message = `Invalid field "${invalidField.join('", "')}" used`;
     error.statusCode = 200;
+    throw error;
   }
 
   // missing required fields
   const requiredFields = required.filter(field => !body[field]);
   if (requiredFields.length) {
     error.message = `No "${requiredFields.join('", "')}" field specified`;
-  }
-  if (error.message) {
-    error.statusCode = error.statusCode || 400;
+    error.statusCode = 400;
     throw error;
   }
 };
 
 module.exports.send = async (event = {}) => {
-  let { body, pathParameters } = event;
+  let { body, pathParameters = {} } = event;
   body = typeof body === 'string' ? JSON.parse(body) : body;
 
   const domain =

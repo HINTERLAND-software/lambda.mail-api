@@ -4,36 +4,37 @@
 
 AWS Lambda to process sent mail requests and forward them through a smtp mailer to the different recipients
 
-## Set up domain [eu-west-1]
+## Set up ses [eu-west-1]
 
-1. Go to [aws console > ses](https://eu-west-1.console.aws.amazon.com/ses/home?region=eu-west-1) and register new domain.
-2. Add DNS records to domain
-   (If email is supposed to receive mails add `example.com MX 10 inbound-smtp.eu-west-1.amazonaws.com`)
-
+1. Set ENV variables
 ```bash
-export AWS_PROFILE=jrdev-routing
+export ENV=development
+export AWS_PROFILE=jrdev-${ENV}
 export AWS_REGION=eu-west-1
-
-# Verify email[s]
+export EMAIL=admin+mail-api-${ENV}@johannroehl.de
+```
+2. Verify email(s)
+```bash
 aws ses verify-email-identity --email-address user@example.com --region $AWS_REGION
 # or
 while read mail; do
   echo "Verifying \"$mail\""
   aws ses verify-email-identity --email-address $mail --region $AWS_REGION
 done < ./verified_mails
-
-# update or create template
+```
+3. Update or create template
+```bash
 npm run upsert:template
-
-export EMAIL=roehl.johann@gmail.com
-# create topic if it does not exist
-export TOPIC_ARN=`aws sns create-topic --name ses-mailing-$EMAIL-topic --region $AWS_REGION --query 'TopicArn'`
-# subscribe to topic
+```
+4. If a new setup on new account
+```bash
+# Create topic if it does not exist
+export TOPIC_ARN=`aws sns create-topic --name ses-mail-api-topic --region $AWS_REGION --query TopicArn`
+# Subscribe to topic (respond to mail)
 aws sns subscribe --topic-arn $TOPIC_ARN --protocol email --notification-endpoint $EMAIL --region $AWS_REGION
 
-# create ses configuration set
-export CS_NAME=ses-configuration
+# Create ses configuration set
+export CS_NAME=ses-configuration-mail-api
 aws ses create-configuration-set --configuration-set Name=$CS_NAME --region $AWS_REGION
-aws ses create-configuration-set-event-destination --configuration-set-name $CS_NAME --region $AWS_REGION --event-destination "{\"Name\": \"ses-sns-renderingfailure\", \"Enabled\": true, \"MatchingEventTypes\": [\"renderingFailure\", \"reject\", \"bounce\", \"complaint\"], \"SNSDestination\": {\"TopicARN\": \"$TOPIC_ARN\"}}"
-
+aws ses create-configuration-set-event-destination --configuration-set-name $CS_NAME --region $AWS_REGION --event-destination "{\"Name\": \"ses-sns-mail-api\", \"Enabled\": true, \"MatchingEventTypes\": [\"renderingFailure\", \"reject\", \"bounce\", \"complaint\"], \"SNSDestination\": {\"TopicARN\": $TOPIC_ARN}}"
 ```

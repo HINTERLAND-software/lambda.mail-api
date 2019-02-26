@@ -30,6 +30,7 @@ provider:
     - Effect: 'Allow'
       Action:
         - 'ses:SendEmail'
+        - 'ses:SendTemplatedEmail'
       Resource: '*'
 
 custom:
@@ -73,7 +74,7 @@ functions:
       - http:
           private: true
           cors: true
-          path: mail/send/{domain}
+          path: send/{domain}
           method: post
           request:
             parameters:

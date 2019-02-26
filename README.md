@@ -25,10 +25,11 @@ done < ./verified_mails
 # update or create template
 npm run upsert:template
 
+export EMAIL=roehl.johann@gmail.com
 # create topic if it does not exist
-export TOPIC_ARN=`aws sns create-topic --name ses-mailing-topic --region $AWS_REGION --query 'TopicArn'`
+export TOPIC_ARN=`aws sns create-topic --name ses-mailing-$EMAIL-topic --region $AWS_REGION --query 'TopicArn'`
 # subscribe to topic
-aws sns subscribe --topic-arn $TOPIC_ARN --protocol email --notification-endpoint <email> --region $AWS_REGION
+aws sns subscribe --topic-arn $TOPIC_ARN --protocol email --notification-endpoint $EMAIL --region $AWS_REGION
 
 # create ses configuration set
 export CS_NAME=ses-configuration

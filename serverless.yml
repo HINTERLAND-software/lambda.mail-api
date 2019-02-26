@@ -68,10 +68,14 @@ custom:
 
 functions:
   sendmail:
-    handler: handler.sendmail
+    handler: handler.send
     events:
       - http:
           private: true
           cors: true
-          path: send
+          path: mail/send/{domain}
           method: post
+          request:
+            parameters:
+              paths:
+                domain: true

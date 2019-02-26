@@ -1,7 +1,6 @@
 'use strict';
 
 const { httpResponse, getConfig } = require('./lib/misc');
-const { domains } = require('./config');
 
 const sendmail = require('./lib/sendmail');
 
@@ -9,7 +8,6 @@ const validateRequest = (config, body) => {
   const error = new Error();
   const {
     validationFields: { invalid, required },
-    recipient,
   } = config;
 
   // honeypot triggered
@@ -17,14 +15,6 @@ const validateRequest = (config, body) => {
   if (invalidField.length) {
     error.message = `Invalid field "${invalidField.join('", "')}" used`;
     error.statusCode = 200;
-  }
-
-  // wrong recipient
-  const invalidRecipient = !domains.find(
-    ({ domain: d }) => d === recipient.split('@')[1]
-  );
-  if (invalidRecipient) {
-    error.message = `Invalid recipient: "${recipient}"`;
   }
 
   // missing required fields
@@ -38,15 +28,21 @@ const validateRequest = (config, body) => {
   }
 };
 
-module.exports.sendmail = async (event = {}) => {
-  const body =
-    typeof event.body === 'string' ? JSON.parse(event.body) : event.body;
+module.exports.send = async (event = {}) => {
+  let { body, pathParameters } = event;
+  body = typeof body === 'string' ? JSON.parse(body) : body;
 
-  const { receiver, name, surname, domain, ...rest } = body;
-  const keys = { ...rest, name: `${name} ${surname || ''}` };
-  const config = getConfig(domain, receiver);
+  const domain =
+    typeof pathParameters === 'string'
+      ? JSON.parse(pathParameters).domain
+      : pathParameters.domain;
 
+  const { mail, name, surname, ...rest } = body;
+  const keys = { ...rest, name: `${name} ${surname || ''}`, mail };
+
+  let config;
   try {
+    config = getConfig(domain, keys);
     validateRequest(config, body);
     return sendmail(config, keys);
   } catch (err) {

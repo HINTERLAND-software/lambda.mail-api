@@ -5,8 +5,8 @@ module.exports = {
   domains: [
     {
       domain: 'johannroehl.de',
-      user: 'no-reply',
-      endpoint: 'admin+mailer',
+      user: 'no-reply', // the user that is registered in aws sns
+      endpoint: 'admin+mail-api', // the recipient of the mail
       validationFields: {
         invalid: ['honeypot'],
         required: [
@@ -36,6 +36,7 @@ module.exports = {
     },
   ],
   defaults: {
+    locale: 'de',
     user: 'no-reply',
     endpoint: 'info',
     validationFields: {

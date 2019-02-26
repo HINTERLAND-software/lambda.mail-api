@@ -40,6 +40,7 @@ module.exports = {
     user: 'no-reply',
     endpoint: 'info',
     validationFields: {
+      ignore: ['receiver'],
       invalid: ['honeypot'],
       required: [
         'mail',

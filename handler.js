@@ -1,49 +1,51 @@
 'use strict';
 
-const { callbackHandler, getSMTPconfig } = require('./lib/misc');
-const SmtpTransport = require('./lib/smtpmailer');
-const { self, domains, forced } = require('./config');
+const { httpResponse, getConfig } = require('./lib/misc');
 
 const sendmail = require('./lib/sendmail');
 
-module.exports.sendmail = (event, context, callback) => {
-  const response = callbackHandler(callback);
-
-  const payload = typeof event.body === 'string' ? JSON.parse(event.body) : event.body;
+const validateRequest = (config, body) => {
+  const error = new Error();
   const {
-    receiver = self, name, surname, domain, ...rest
-  } = payload;
+    validationFields: { invalid, required },
+  } = config;
 
-  const recipient =
-    (process.env.STAGE === 'production' || process.env.NODE_ENV === 'test') &&
-    !forced.find(f => receiver.includes(f))
-      ? receiver
-      : self;
-
-  const keys = { ...rest, name: `${name} ${surname || ''}` };
-
-  const smtpConfig = getSMTPconfig(domain);
-  const { validationFields, config } = smtpConfig;
   // honeypot triggered
-  const invalidField = validationFields.invalid.filter(field => payload[field]);
+  const invalidField = invalid.filter(field => body[field]);
   if (invalidField.length) {
-    console.log(`Invalid field "${invalidField.join('", "')}" used`);
-    return response(200, 'Honey mail sent');
+    error.message = `Invalid field "${invalidField.join('", "')}" used`;
+    error.statusCode = 200;
+    throw error;
   }
 
-  // wrong recipient
-  const invalidRecipient = !domains.find(({ domain: d }) => d === recipient.split('@')[1]);
-  if (invalidRecipient) {
-    return response(400, `Invalid recipient: "${recipient}"`, event);
-  }
-
-  const requiredFields = validationFields.required.filter(field => !payload[field]);
+  // missing required fields
+  const requiredFields = required.filter(field => !body[field]);
   if (requiredFields.length) {
-    return response(400, `No "${requiredFields.join('", "')}" field specified`);
+    error.message = `No "${requiredFields.join('", "')}" field specified`;
+    error.statusCode = 400;
+    throw error;
   }
+};
 
-  const smtpTransport = new SmtpTransport(config);
-  return sendmail(smtpConfig, smtpTransport, keys, recipient)
-    .then(({ statusCode, message, result }) => response(statusCode, message, result))
-    .catch(err => response(err.statusCode || 400, err.message, err));
+module.exports.send = async (event = {}) => {
+  let { body, pathParameters = {} } = event;
+  body = typeof body === 'string' ? JSON.parse(body) : body;
+
+  const domain =
+    typeof pathParameters === 'string'
+      ? JSON.parse(pathParameters).domain
+      : pathParameters.domain;
+
+  const { mail, name, surname, ...rest } = body;
+  const keys = { ...rest, name: `${name} ${surname || ''}`, mail };
+
+  let config;
+  try {
+    config = getConfig(domain, keys);
+    validateRequest(config, body);
+    return sendmail(config, keys);
+  } catch (err) {
+    console.error(err);
+    return httpResponse(err.statusCode, err.message, { body, config });
+  }
 };

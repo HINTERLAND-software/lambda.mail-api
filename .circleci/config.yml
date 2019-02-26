@@ -81,6 +81,8 @@ jobs:
 
           source <(curl -sL ${ASSUME_ROLE_GIST}) $ACCOUNT_ID ${SERVERLESS_ROLE} ${AWS_REGION} ${CIRCLE_SHA1}
 
+          npm run upsert:template
+
           eval $DEPLOY
 workflows:
   version: 2

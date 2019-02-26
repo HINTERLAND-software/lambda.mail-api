@@ -7,8 +7,11 @@
   "author": "jroehl",
   "license": "MIT",
   "scripts": {
-    "test": "eslint **/*.js && node handler.js && npm run jest",
+    "lint": "prettier --write **/*",
+    "test": "npm run lint && node handler.js && npm run jest",
     "start:offline": "serverless offline --port 6060 start",
+    "start:offline:prod": "serverless offline --port 6060 -s production start",
+    "upsert:template": "node bin/upsert-template.js",
     "jest": "jest",
     "deploy": "serverless deploy -s dev",
     "deploy:prod": "serverless deploy -s production",
@@ -16,20 +19,17 @@
     "logs:prod": "serverless logs -s production -f sendmail"
   },
   "devDependencies": {
-    "eslint": "^4.19.1",
-    "eslint-config-airbnb-base": "^12.1.0",
-    "eslint-plugin-import": "^2.11.0",
-    "eslint-plugin-jest": "^21.15.1",
-    "jest": "^22.4.3",
-    "jest-cli": "^22.4.3",
-    "serverless": "^1.27.1",
-    "serverless-domain-manager": "^2.3.6",
-    "serverless-offline": "^3.20.3",
+    "jest": "^24.1.0",
+    "jest-cli": "^24.1.0",
+    "prettier": "^1.16.4",
+    "serverless": "^1.38.0",
+    "serverless-domain-manager": "^2.6.13",
+    "serverless-offline": "^4.7.0",
     "serverless-plugin-aws-alerts": "^1.2.4",
-    "serverless-plugin-include-dependencies": "^3.1.0"
+    "serverless-plugin-include-dependencies": "^3.2.1"
   },
   "dependencies": {
-    "nodemailer": "^4.6.4"
+    "aws-sdk": "^2.410.0"
   },
   "jest": {
     "verbose": true,

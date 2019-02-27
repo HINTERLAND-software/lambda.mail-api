@@ -61,11 +61,21 @@ custom:
       functionDuration:
         threshold: 4000 # override threshold
         treatMissingData: notBreaching
+      statusCodeErrors:
+        metric: statusCodeErrors
+        threshold: 0
+        statistic: Sum
+        period: 60
+        evaluationPeriods: 1
+        comparisonOperator: GreaterThanThreshold
+        pattern: '{$.statusCode != 200}'
+        treatMissingData: notBreaching
     alarms:
       - functionThrottles
       - functionErrors
       - functionInvocations
       - functionDuration
+      - statusCodeErrors
 
 functions:
   sendmail:

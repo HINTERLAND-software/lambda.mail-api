@@ -69,7 +69,7 @@ custom:
         evaluationPeriods: 1
         comparisonOperator: GreaterThanThreshold
         pattern: '{$.statusCode != 200}'
-        treatMissingData: notBreaching
+        treatMissingData: missing
     alarms:
       - functionThrottles
       - functionErrors

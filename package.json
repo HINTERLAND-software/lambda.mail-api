@@ -29,7 +29,9 @@
     "serverless-plugin-include-dependencies": "^3.2.1"
   },
   "dependencies": {
-    "aws-sdk": "^2.410.0"
+    "aws-sdk": "^2.597.0",
+    "change-case": "^4.1.1",
+    "dotenv": "^8.2.0"
   },
   "jest": {
     "verbose": true,

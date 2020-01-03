@@ -10,16 +10,16 @@ AWS Lambda to process sent mail requests and forward them through a smtp mailer 
 ```bash
 export ENV=development
 export AWS_PROFILE=jrdev-${ENV}
-export AWS_REGION=eu-west-1
+export AWS_SES_REGION=eu-west-1
 export EMAIL=admin+mail-api-${ENV}@johannroehl.de
 ```
 2. Verify email(s)
 ```bash
-aws ses verify-email-identity --email-address user@example.com --region $AWS_REGION
+aws ses verify-email-identity --email-address user@example.com --region $AWS_SES_REGION
 # or
 while read mail; do
   echo "Verifying \"$mail\""
-  aws ses verify-email-identity --email-address $mail --region $AWS_REGION
+  aws ses verify-email-identity --email-address $mail --region $AWS_SES_REGION
 done < ./verified_mails
 ```
 3. Update or create template
@@ -29,12 +29,12 @@ npm run upsert:template
 4. If a new setup on new account
 ```bash
 # Create topic if it does not exist
-export TOPIC_ARN=`aws sns create-topic --name ses-mail-api-topic --region $AWS_REGION --query TopicArn`
+export TOPIC_ARN=`aws sns create-topic --name ses-mail-api-topic --region $AWS_SES_REGION --query TopicArn`
 # Subscribe to topic (respond to mail)
-aws sns subscribe --topic-arn $TOPIC_ARN --protocol email --notification-endpoint $EMAIL --region $AWS_REGION
+aws sns subscribe --topic-arn $TOPIC_ARN --protocol email --notification-endpoint $EMAIL --region $AWS_SES_REGION
 
 # Create ses configuration set
 export CS_NAME=ses-configuration-mail-api
-aws ses create-configuration-set --configuration-set Name=$CS_NAME --region $AWS_REGION
-aws ses create-configuration-set-event-destination --configuration-set-name $CS_NAME --region $AWS_REGION --event-destination "{\"Name\": \"ses-sns-mail-api\", \"Enabled\": true, \"MatchingEventTypes\": [\"renderingFailure\", \"reject\", \"bounce\", \"complaint\"], \"SNSDestination\": {\"TopicARN\": $TOPIC_ARN}}"
+aws ses create-configuration-set --configuration-set Name=$CS_NAME --region $AWS_SES_REGION
+aws ses create-configuration-set-event-destination --configuration-set-name $CS_NAME --region $AWS_SES_REGION --event-destination "{\"Name\": \"ses-sns-mail-api\", \"Enabled\": true, \"MatchingEventTypes\": [\"renderingFailure\", \"reject\", \"bounce\", \"complaint\"], \"SNSDestination\": {\"TopicARN\": $TOPIC_ARN}}"
 ```

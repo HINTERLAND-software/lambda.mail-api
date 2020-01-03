@@ -1,7 +1,9 @@
-const AWS = require('aws-sdk');
+import { SES } from 'aws-sdk';
 
-const sendmail = require('./sendmail');
-const { defaults, translations } = require('../config');
+import sendmail from './sendmail';
+import cfg from '../config';
+
+const { defaults, translations } = cfg;
 
 jest.mock('aws-sdk');
 
@@ -16,7 +18,7 @@ const config = {
 };
 
 describe('sendmail', () => {
-  AWS.SES = class {
+  SES = class {
     sendTemplatedEmail() {
       return {
         promise: () => Promise.reject({ statusCode: 400, message: 'foobar' }),
@@ -82,7 +84,7 @@ describe('sendmail', () => {
     });
   });
   test('should return successfully', () => {
-    AWS.SES = class {
+    SES = class {
       sendTemplatedEmail() {
         return {
           promise: () => Promise.resolve({ statusCode: 200, message: 'yay' }),

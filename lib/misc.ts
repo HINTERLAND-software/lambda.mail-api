@@ -1,15 +1,29 @@
-const { domains, defaults, forced, translations } = require('../config');
+import config from '../config';
 
-const [fallback] = domains;
-const self = `${fallback.endpoint}@${fallback.domain}`;
+const { domains, defaults, forced, translations } = config;
+
+declare type HTTPResponse = {
+  statusCode: Number;
+  headers: {
+    'Access-Control-Allow-Origin': string;
+    'Access-Control-Allow-Credentials': string;
+  };
+  body: string;
+};
 
 /**
  * Handle the http response
- * @param {string} statusCode
- * @param {string} message
- * @param {string} [input='']
+ *
+ * @param {Number} statusCode
+ * @param {String} message
+ * @param {any} [input='']
+ * @returns {HTTPResponse}
  */
-const httpResponse = (statusCode, message, input = '') => {
+export const httpResponse = (
+  statusCode: Number,
+  message: String,
+  input: any = ''
+): HTTPResponse => {
   const res = {
     statusCode,
     headers: {
@@ -35,7 +49,10 @@ const httpResponse = (statusCode, message, input = '') => {
  * @param {object} keys
  * @returns {object}
  */
-const getConfig = (senderDomain, keys) => {
+export const getConfig = (senderDomain, keys) => {
+  const [fallback] = domains;
+  const self = `${fallback.endpoint}@${fallback.domain}`;
+
   const config = domains.find(({ domain }) => domain === senderDomain);
   if (!config) throw new Error(`Domain "${senderDomain}" not set up`);
 
@@ -63,9 +80,4 @@ const getConfig = (senderDomain, keys) => {
     mail,
     ...config,
   };
-};
-
-module.exports = {
-  httpResponse,
-  getConfig,
 };

@@ -3,19 +3,20 @@
 service: api-mail
 
 plugins:
-  - serverless-plugin-include-dependencies
+  - serverless-webpack
   - serverless-plugin-aws-alerts
   - serverless-domain-manager
   - serverless-offline
 
 provider:
   name: aws
-  runtime: nodejs8.10
-  memorySize: 128
+  runtime: nodejs12.x
   region: eu-central-1
   stage: dev # you can override this via the CLI argument
   apiKeys:
     - ${self:service}-key-${self:custom.stage}
+  apiGateway:
+    minimumCompressionSize: 1024 # Enable gzip compression for responses > 1 KB
   usagePlan:
     quota:
       limit: 2000
@@ -25,8 +26,9 @@ provider:
       rateLimit: 5
   environment: # Service wide environment variables
     STAGE: ${self:custom.stage}
-    TEMPLATE_NAME: ${file(templates/${env:TEMPLATE_NAME,default-template}.json):TemplateName}
-    AWS_SES_REGION: ${env:AWS_SES_REGION,eu-west-1}
+    TEMPLATE_NAME: ${file(./templates/${env:TEMPLATE_NAME, "default-template"}.json):TemplateName}
+    AWS_SES_REGION: ${env:AWS_SES_REGION, "eu-west-1"}
+    AWS_NODEJS_CONNECTION_REUSE_ENABLED: 1
   iamRoleStatements:
     - Effect: 'Allow'
       Action:
@@ -35,6 +37,9 @@ provider:
       Resource: '*'
 
 custom:
+  webpack:
+    webpackConfig: ./webpack.config.js
+    includeModules: true
   # https://github.com/amplify-education/serverless-domain-manager
   stage: ${opt:stage, self:provider.stage}
   domains:

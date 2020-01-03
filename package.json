@@ -19,19 +19,28 @@
     "logs:prod": "serverless logs -s production -f sendmail"
   },
   "devDependencies": {
-    "jest": "^24.1.0",
-    "jest-cli": "^24.1.0",
-    "prettier": "^1.16.4",
-    "serverless": "^1.38.0",
-    "serverless-domain-manager": "^2.6.13",
-    "serverless-offline": "^4.7.0",
-    "serverless-plugin-aws-alerts": "^1.2.4",
-    "serverless-plugin-include-dependencies": "^3.2.1"
+    "@types/aws-lambda": "^8.10.39",
+    "@types/jest": "^24.0.25",
+    "@types/node": "^13.1.2",
+    "fork-ts-checker-webpack-plugin": "^3.1.1",
+    "jest": "^24.9.0",
+    "jest-cli": "^24.9.0",
+    "prettier": "^1.19.1",
+    "serverless": "^1.60.4",
+    "serverless-domain-manager": "^3.3.0",
+    "serverless-offline": "^5.12.1",
+    "serverless-plugin-aws-alerts": "^1.4.0",
+    "serverless-webpack": "^5.3.1",
+    "ts-loader": "^6.2.1",
+    "typescript": "^3.7.4",
+    "webpack": "^4.41.5",
+    "webpack-node-externals": "^1.7.2"
   },
   "dependencies": {
     "aws-sdk": "^2.597.0",
     "change-case": "^4.1.1",
-    "dotenv": "^8.2.0"
+    "dotenv": "^8.2.0",
+    "source-map-support": "^0.5.16"
   },
   "jest": {
     "verbose": true,

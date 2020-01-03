@@ -1,5 +1,7 @@
-const { getConfig, httpResponse } = require('./misc');
-const { defaults, translations, domains } = require('../config');
+import { getConfig, httpResponse } from './misc';
+import config from '../config';
+
+const { defaults, translations, domains } = config;
 
 const response = {
   locale: 'de',

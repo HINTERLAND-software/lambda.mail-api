@@ -1,4 +1,4 @@
-const { send } = require('./handler');
+import { send } from './handler';
 
 jest.mock('./lib/misc', () => ({
   httpResponse: (...cb) => [...cb],

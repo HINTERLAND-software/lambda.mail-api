@@ -1,15 +1,16 @@
-const AWS = require('aws-sdk');
+import { SES } from 'aws-sdk';
 
-const { httpResponse } = require('./misc');
-const { defaults } = require('../config');
+import { httpResponse } from './misc';
+import config from '../config';
+
+const { defaults } = config;
 
 /**
  * sendmail handler
  * @param {object} config
- * @param {object} keys
  * @param {string} recipient
  */
-module.exports = async config => {
+export default async config => {
   const { domain, user, locales, recipient, recipientForced, keys } = config;
 
   const { partials, bools } = Object.entries(keys).reduce(
@@ -77,14 +78,12 @@ module.exports = async config => {
   };
 
   try {
-    const res = await new AWS.SES({ region: process.env.AWS_SES_REGION })
+    const res = await new SES({ region: process.env.AWS_SES_REGION })
       .sendTemplatedEmail(params)
       .promise();
     return httpResponse(
       200,
-      `Mail sent to ${params.Destination.ToAddresses[0]} (MessageId: "${
-        res.MessageId
-      }")`,
+      `Mail sent to ${params.Destination.ToAddresses[0]} (MessageId: "${res.MessageId}")`,
       result
     );
   } catch (error) {

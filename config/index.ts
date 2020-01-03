@@ -1,6 +1,6 @@
-const translations = require('./translations');
+import translations from './translations';
 
-module.exports = {
+export default {
   forced: ['@johannroehl.de', 'roehl.johann@gmail.com'], // receiving addresses that force the mail to be send to admin+mailer@johannroehl.de
   domains: [
     {

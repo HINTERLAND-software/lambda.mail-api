@@ -2,11 +2,9 @@ import { config } from 'dotenv';
 import { resolve } from 'path';
 import parse from './parse-environment';
 
-config({ path: resolve(__dirname, '..', 'test', 'env') });
-
 describe('parse', () => {
   test('returns parsed environment object', () => {
-    const parsed = parse(process.env);
+    const parsed = parse(config({ path: resolve(__dirname, 'env') }).parsed);
     expect(parsed).toEqual({
       'johannroehl.de': {
         index: 0,

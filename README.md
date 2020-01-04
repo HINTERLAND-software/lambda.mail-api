@@ -65,7 +65,7 @@ done <<< ${VERIFIED_MAILS}
 npm run upsert:template
 ```
 
-4. If a new setup on new account
+4. If new setup on new account
 
 ```bash
 # Create topic if it does not exist
@@ -78,3 +78,8 @@ export CS_NAME=ses-configuration-mail-api
 aws ses create-configuration-set --configuration-set Name=$CS_NAME --region $AWS_SES_REGION
 aws ses create-configuration-set-event-destination --configuration-set-name $CS_NAME --region $AWS_SES_REGION --event-destination "{\"Name\": \"ses-sns-mail-api\", \"Enabled\": true, \"MatchingEventTypes\": [\"renderingFailure\", \"reject\", \"bounce\", \"complaint\"], \"SNSDestination\": {\"TopicARN\": $TOPIC_ARN}}"
 ```
+
+## TODO
+
+- Migrate to GitHub actions
+- Documenation

@@ -1,6 +1,19 @@
 const copyright = `© 2013 - ${new Date().getFullYear()} jr | development`;
 
-module.exports = {
+export const VALIDATIONS = {
+  OVERRIDE_FOR: [],
+  VALIDATION_BLACKLIST: ['honeypot'],
+  VALIDATION_WHITELIST: ['receiver', 'domain'],
+  VALIDATION_REQUIRED: [
+    'mail',
+    'name',
+    'message',
+    'dataprivacy-disclaimer',
+    'processing-disclaimer',
+  ],
+};
+
+export const translations = {
   de: {
     'dataprivacy-disclaimer': 'Zustimmung Datenschutz erteilt',
     'processing-disclaimer': 'Zustimmung Datenverarbeitung erteilt',
@@ -10,6 +23,7 @@ module.exports = {
     copyright,
     false: 'Nein',
     form: 'Kontaktformular',
+    from: 'von',
     header: 'Neuer Kontaktformular Eintrag',
     language: 'Sprache',
     locale: 'Sprache',
@@ -34,6 +48,7 @@ module.exports = {
     copyright,
     false: 'No',
     form: 'Contact form',
+    from: 'from',
     header: 'New contact form entry',
     language: 'Language',
     locale: 'Language',

@@ -1,0 +1,36 @@
+# default values
+# mail will not contain whitelisted keys
+VALIDATION_WHITELIST="receiver honeypot"
+# payload will be checked for blacklisted keys
+VALIDATION_BLACKLIST="honeypot"
+# payload will be checked for required keys
+VALIDATION_REQUIRED="mail name message dataprivacy-disclaimer processing-disclaimer"
+# override receiver mail when sender matches
+OVERRIDE_FOR="@foobar.com"
+
+# index for iteration (have to be following numbers, starting at 0)
+DOMAIN_0="johannroehl.de"
+# the recipient(s) of the mail
+RECEIVER_0="mail"
+# the user that is registered in aws sns
+SES_USER_0="no-reply"
+# overwrite default values with corresponding index
+VALIDATION_REQUIRED_0="required_0"
+
+DOMAIN_1="foobar.com"
+RECEIVER_1="service"
+SES_USER_1="no-reply"
+VALIDATION_REQUIRED_1="required_1"
+VALIDATION_BLACKLIST_1="blacklist_1"
+OVERRIDE_FOR_1="force_mail_1"
+VALIDATION_WHITELIST_1="whitelist_1"
+
+DOMAIN_2="foo.com"
+RECEIVER_2="bar"
+SES_USER_2="no-reply"
+VALIDATION_BLACKLIST_2="blacklist_2"
+
+DOMAIN_3="bar.com"
+RECEIVER_3="foo"
+SES_USER_3="no-reply"
+OVERRIDE_FOR_3="force_mail_3"

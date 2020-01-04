@@ -64,6 +64,7 @@ typings/
 # dotenv environment variables file
 .env
 .envrc
+.env.json
 
 # Webpack directories
 .webpack

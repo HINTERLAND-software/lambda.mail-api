@@ -1,30 +1,32 @@
-import config from '../config';
-
-const { domains, defaults, forced, translations } = config;
-
-declare type HTTPResponse = {
-  statusCode: Number;
-  headers: {
-    'Access-Control-Allow-Origin': string;
-    'Access-Control-Allow-Credentials': string;
-  };
-  body: string;
-};
+import { translations } from '../config';
+import { APIGatewayProxyResult } from 'aws-lambda';
+import { existsSync, readFileSync } from 'fs';
+import { resolve } from 'path';
+import parseEnvironment, {
+  ParsedDomainConfigs,
+  DomainConfig,
+} from '../bin/parse-environment';
+import { config as dotEnv } from 'dotenv';
+import { KeyValuePairs } from '../handler';
 
 /**
  * Handle the http response
  *
- * @param {Number} statusCode
- * @param {String} message
+ * @param {number} statusCode
+ * @param {string} message
  * @param {any} [input='']
- * @returns {HTTPResponse}
+ * @returns {APIGatewayProxyResult}
  */
 export const httpResponse = (
-  statusCode: Number,
-  message: String,
+  statusCode: number,
+  message: string,
   input: any = ''
-): HTTPResponse => {
-  const res = {
+): APIGatewayProxyResult => {
+  // log to cloudwatch if not test
+  if (process.env.NODE_ENV !== 'test') {
+    console.log(JSON.stringify({ statusCode, message, input }, null, 2));
+  }
+  return {
     statusCode,
     headers: {
       'Access-Control-Allow-Origin': '*',
@@ -35,49 +37,81 @@ export const httpResponse = (
       input,
     }),
   };
-  // log to cloudwatch if not test
-  if (process.env.NODE_ENV !== 'test') {
-    console.log(JSON.stringify({ statusCode, message, input }, null, 2));
-  }
-  return res;
 };
 
 /**
- * get smtp configuration according to domain
+ * Load config from file or environment
  *
- * @param {string} senderDomain
- * @param {object} keys
- * @returns {object}
+ * @returns {ParsedDomainConfigs}
  */
-export const getConfig = (senderDomain, keys) => {
-  const [fallback] = domains;
-  const self = `${fallback.endpoint}@${fallback.domain}`;
+const checkForConfig = (): ParsedDomainConfigs => {
+  const envFile = resolve(__dirname, '..', '.env.json');
+  if (existsSync(envFile)) {
+    return JSON.parse(readFileSync(envFile, 'utf-8'));
+  }
+  dotEnv();
+  return parseEnvironment(process.env);
+};
 
-  const config = domains.find(({ domain }) => domain === senderDomain);
-  if (!config) throw new Error(`Domain "${senderDomain}" not set up`);
+/**
+ * Get the fallback of the configuration
+ *
+ * @param {ParsedDomainConfigs} config
+ * @returns {DomainConfig}
+ */
+const getFallback = (config: ParsedDomainConfigs): DomainConfig => {
+  const [key] = Object.entries(config).find(([, value]) => value.index === 0);
+  return config[key];
+};
 
-  const { locale = defaults.locale, mail = self } = keys;
-  const locales = translations[locale];
+export declare type ConfigSet = {
+  keys: KeyValuePairs;
+  translations: KeyValuePairs;
+  environment: string;
+  recipient: string;
+  recipientForced: string | undefined;
+  config: DomainConfig;
+};
 
-  const recipient = `${config.endpoint || defaults.endpoint}@${config.domain}`;
+/**
+ * Get configuration set according to domain
+ *
+ * @param {string} domain
+ * @param {KeyValuePairs} keys
+ * @returns {ConfigSet}
+ */
+export const getConfig = (domain: string, keys: KeyValuePairs): ConfigSet => {
+  const envConfig = checkForConfig();
+  const fallback = getFallback(envConfig);
+  const self = `${fallback.config.receiver}@${fallback.config.domain}`;
 
-  const forceRecipient = forced.some(f => mail.includes(f));
+  const senderConfig = envConfig[domain];
+  if (!senderConfig) throw new Error(`Domain "${domain}" not set up`);
+
+  const { mail = self } = keys;
+  const locales = translations[process.env.LOCALE] || translations.en;
+
   const environment =
     process.env.JEST_WORKER_ID !== undefined ? 'test' : process.env.STAGE;
 
+  const recipient = `${senderConfig.config.receiver}@${senderConfig.config.domain}`;
+
+  console.log(senderConfig.validations);
+
+  const overrideRecipient = senderConfig.validations.overrideFor.some(o =>
+    (<string>mail).includes(o)
+  );
   let recipientForced;
-  if (forceRecipient || !environment.match(/(production|test)/i)) {
+  if (overrideRecipient || !environment.match(/(production|test)/i)) {
     recipientForced = self;
   }
 
   return {
-    ...defaults,
-    keys,
-    locales,
+    keys: { ...keys, mail },
+    translations: locales,
     environment,
     recipient,
     recipientForced,
-    mail,
-    ...config,
+    config: senderConfig,
   };
 };

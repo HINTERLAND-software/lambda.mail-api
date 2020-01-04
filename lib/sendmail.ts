@@ -1,24 +1,31 @@
 import { SES } from 'aws-sdk';
+import { httpResponse, ConfigSet } from './misc';
 
-import { httpResponse } from './misc';
-import config from '../config';
-
-const { defaults } = config;
+const sortByKey = (a, b) => a.key.localeCompare(b.key);
 
 /**
  * sendmail handler
  * @param {object} config
  * @param {string} recipient
  */
-export default async config => {
-  const { domain, user, locales, recipient, recipientForced, keys } = config;
+export default async (configSet: ConfigSet) => {
+  const {
+    translations,
+    recipient,
+    recipientForced,
+    keys,
+    config: {
+      config: { domain, sesUser },
+      validations,
+    },
+  } = configSet;
 
   const { partials, bools } = Object.entries(keys).reduce(
     (red, [k, v]) => {
       if (
         v === undefined ||
         v === '' ||
-        defaults.validationFields.ignore.some(field => field === k)
+        validations.validationWhitelist.some(field => field === k)
       ) {
         return red;
       }
@@ -29,7 +36,7 @@ export default async config => {
           bools: [
             ...red.bools,
             {
-              key: locales[k] || k,
+              key: translations[k] || k,
               value: bool
                 ? '<span style="color: green;">&#10004;</span>'
                 : '<span style="color: red;">&#10060;</span>',
@@ -41,7 +48,7 @@ export default async config => {
         ...red,
         partials: [
           ...red.partials,
-          { key: locales[k] || k, value: locales[v] || v },
+          { key: translations[k] || k, value: translations[v] || v },
         ],
       };
     },
@@ -49,18 +56,18 @@ export default async config => {
   );
 
   const templateData = {
-    partials: partials.sort((a, b) => a.key.localeCompare(b.key)),
-    bools: bools.sort((a, b) => a.key.localeCompare(b.key)),
-    ...locales,
+    ...translations,
+    ...keys,
     domain,
     from: keys.mail,
-    ...keys,
+    partials: partials.sort(sortByKey),
+    bools: bools.sort(sortByKey),
   };
 
-  const params = {
+  const params: SES.SendTemplatedEmailRequest = {
     Destination: { ToAddresses: [recipientForced || recipient] },
-    ReplyToAddresses: [keys.mail],
-    Source: `${locales.form} <${user}@${domain}>`,
+    ReplyToAddresses: [<string>keys.mail],
+    Source: `${translations.form} <${sesUser}@${domain}>`,
     Template: process.env.TEMPLATE_NAME,
     TemplateData: JSON.stringify(templateData),
   };
@@ -70,7 +77,7 @@ export default async config => {
     presendTimestamp: Date(),
     domain,
     keys,
-    config,
+    config: configSet,
     params: {
       ...params,
       TemplateData: templateData,

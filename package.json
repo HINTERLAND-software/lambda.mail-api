@@ -8,10 +8,11 @@
   "license": "MIT",
   "scripts": {
     "lint": "prettier --write **/*",
-    "test": "npm run lint && node handler.js && npm run jest",
+    "test": "npm run lint && npm run jest",
     "start:offline": "serverless offline --port 6060 start",
     "start:offline:prod": "serverless offline --port 6060 -s production start",
-    "upsert:template": "node bin/upsert-template.js",
+    "upsert:template": "ts-node bin/upsert-template.ts",
+    "parse:environment": "CREATE_CONFIG_FILE=1 ts-node bin/parse-environment.ts",
     "jest": "jest",
     "deploy": "serverless deploy -s dev",
     "deploy:prod": "serverless deploy -s production",
@@ -31,6 +32,7 @@
     "serverless-offline": "^5.12.1",
     "serverless-plugin-aws-alerts": "^1.4.0",
     "serverless-webpack": "^5.3.1",
+    "ts-jest": "^24.2.0",
     "ts-loader": "^6.2.1",
     "typescript": "^3.7.4",
     "webpack": "^4.41.5",
@@ -40,17 +42,7 @@
     "aws-sdk": "^2.597.0",
     "change-case": "^4.1.1",
     "dotenv": "^8.2.0",
-    "source-map-support": "^0.5.16"
-  },
-  "jest": {
-    "verbose": true,
-    "automock": false,
-    "collectCoverage": true,
-    "coverageDirectory": "./coverage",
-    "coverageReporters": [
-      "json",
-      "text",
-      "html"
-    ]
+    "source-map-support": "^0.5.16",
+    "ts-node": "^8.5.4"
   }
 }

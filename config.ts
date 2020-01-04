@@ -1,6 +1,6 @@
 const copyright = `© 2013 - ${new Date().getFullYear()} jr | development`;
 
-export default {
+export const translations = {
   de: {
     'dataprivacy-disclaimer': 'Zustimmung Datenschutz erteilt',
     'processing-disclaimer': 'Zustimmung Datenverarbeitung erteilt',

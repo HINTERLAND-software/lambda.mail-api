@@ -1,32 +1,36 @@
-import { SES } from 'aws-sdk';
-
-import sendmail from './sendmail';
-import cfg from '../config';
-
-const { defaults, translations } = cfg;
+import * as misc from './misc';
+// import * as AWS from 'aws-sdk';
+const AWS = require('aws-sdk');
 
 jest.mock('aws-sdk');
 
+import sendmail from './sendmail';
+import { translations } from '../config';
+
 const config = {
   keys: { mail: 'foo@bar.com', foo: true, bar: 'false' },
-  domain: 'example.com',
-  user: 'user',
-  locales: translations.de,
-  validationFields: defaults.validationFields,
-  recipientForced: 'forced-recip@johannroehl.de',
-  recipient: 'recip@johannroehl.de',
+  translations: translations.en,
+  recipient: 'mail@johannroehl.de',
+  recipientForced: 'forced@johannroehl.de',
+  config: {
+    config: { domain: 'johannroehl.de', sesUser: 'no-reply' },
+    validations: { validationWhitelist: [] },
+  },
 };
 
 describe('sendmail', () => {
-  SES = class {
-    sendTemplatedEmail() {
-      return {
-        promise: () => Promise.reject({ statusCode: 400, message: 'foobar' }),
-      };
-    }
-  };
+  beforeEach(() => {
+    jest.spyOn(misc, 'parsePartialsAndBooleans').mockReturnValue(<any>{});
+  });
   test('should fail with 400', () => {
-    return sendmail(config).then(res => {
+    AWS.SES = class {
+      sendTemplatedEmail() {
+        return {
+          promise: () => Promise.reject({ statusCode: 400, message: 'foobar' }),
+        };
+      }
+    };
+    return sendmail(<any>config).then(res => {
       expect(res.statusCode).toBe(400);
       expect(res.headers).toEqual({
         'Access-Control-Allow-Origin': '*',
@@ -34,64 +38,44 @@ describe('sendmail', () => {
       });
       const body = JSON.parse(res.body);
       delete body.input.presendTimestamp;
+
       expect(body).toEqual({
         message: 'foobar',
         input: {
-          domain: 'example.com',
           error: {
             statusCode: 400,
             message: 'foobar',
           },
-          keys: {
-            bar: 'false',
-            foo: true,
-            mail: 'foo@bar.com',
-          },
-          config: config,
+          domain: 'johannroehl.de',
           params: {
             Destination: {
-              ToAddresses: ['forced-recip@johannroehl.de'],
+              ToAddresses: ['forced@johannroehl.de'],
             },
             ReplyToAddresses: ['foo@bar.com'],
-            Source: 'Kontaktformular <user@example.com>',
+            Source: 'Contact form <no-reply@johannroehl.de>',
             TemplateData: {
-              bar: 'false',
-              foo: true,
-              bools: [
-                {
-                  key: 'bar',
-                  value: '<span style="color: red;">&#10060;</span>',
-                },
-                {
-                  key: 'foo',
-                  value: '<span style="color: green;">&#10004;</span>',
-                },
-              ],
-              partials: [
-                {
-                  key: 'Absender',
-                  value: 'foo@bar.com',
-                },
-              ],
-              domain: 'example.com',
-              from: 'foo@bar.com',
-              ...translations.de,
+              ...translations.en,
               mail: 'foo@bar.com',
+              foo: true,
+              bar: 'false',
+              domain: 'johannroehl.de',
             },
           },
+          config,
         },
       });
     });
   });
   test('should return successfully', () => {
-    SES = class {
+    delete config.recipientForced;
+    AWS.SES = class {
       sendTemplatedEmail() {
         return {
           promise: () => Promise.resolve({ statusCode: 200, message: 'yay' }),
         };
       }
     };
-    return sendmail(config).then(res => {
+    return sendmail(<any>config).then(res => {
       expect(res.statusCode).toBe(200);
       expect(res.headers).toEqual({
         'Access-Control-Allow-Origin': '*',
@@ -99,48 +83,26 @@ describe('sendmail', () => {
       });
       const body = JSON.parse(res.body);
       delete body.input.presendTimestamp;
+
       expect(body).toEqual({
-        message:
-          'Mail sent to forced-recip@johannroehl.de (MessageId: "undefined")',
+        message: 'Mail sent to mail@johannroehl.de (MessageId: "undefined")',
         input: {
-          domain: 'example.com',
-          keys: {
-            bar: 'false',
-            foo: true,
-            mail: 'foo@bar.com',
-          },
-          config: config,
+          domain: 'johannroehl.de',
           params: {
             Destination: {
-              ToAddresses: ['forced-recip@johannroehl.de'],
+              ToAddresses: ['mail@johannroehl.de'],
             },
             ReplyToAddresses: ['foo@bar.com'],
-            Source: 'Kontaktformular <user@example.com>',
+            Source: 'Contact form <no-reply@johannroehl.de>',
             TemplateData: {
-              bar: 'false',
-              foo: true,
-              bools: [
-                {
-                  key: 'bar',
-                  value: '<span style="color: red;">&#10060;</span>',
-                },
-                {
-                  key: 'foo',
-                  value: '<span style="color: green;">&#10004;</span>',
-                },
-              ],
-              partials: [
-                {
-                  key: 'Absender',
-                  value: 'foo@bar.com',
-                },
-              ],
-              domain: 'example.com',
-              from: 'foo@bar.com',
-              ...translations.de,
+              ...translations.en,
               mail: 'foo@bar.com',
+              foo: true,
+              bar: 'false',
+              domain: 'johannroehl.de',
             },
           },
+          config,
         },
       });
     });

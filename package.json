@@ -14,6 +14,7 @@
     "upsert:template": "ts-node bin/upsert-template.ts",
     "parse:environment": "CREATE_CONFIG_FILE=1 ts-node bin/parse-environment.ts",
     "jest": "jest",
+    "jest:watch": "jest --watch",
     "deploy": "serverless deploy -s dev",
     "deploy:prod": "serverless deploy -s production",
     "logs": "serverless logs -s dev -f sendmail",

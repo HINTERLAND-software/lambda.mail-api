@@ -4,7 +4,7 @@ import parse from './parse-environment';
 
 config({ path: resolve(__dirname, '..', 'test', 'env') });
 
-describe('parse environment file', () => {
+describe('parse', () => {
   test('returns parsed environment object', () => {
     const parsed = parse(process.env);
     expect(parsed).toEqual({

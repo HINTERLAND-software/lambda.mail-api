@@ -1,7 +1,6 @@
 import { SES } from 'aws-sdk';
-import { httpResponse, ConfigSet } from './misc';
-
-const sortByKey = (a, b) => a.key.localeCompare(b.key);
+import { ConfigSet, parsePartialsAndBooleans } from './misc';
+import { httpResponse, Logger } from './utils';
 
 /**
  * sendmail handler
@@ -20,48 +19,17 @@ export default async (configSet: ConfigSet) => {
     },
   } = configSet;
 
-  const { partials, bools } = Object.entries(keys).reduce(
-    (red, [k, v]) => {
-      if (
-        v === undefined ||
-        v === '' ||
-        validations.validationWhitelist.some(field => field === k)
-      ) {
-        return red;
-      }
-      if (v === true || v === 'true' || v === false || v === 'false') {
-        const bool = v === 'true' ? true : v === 'false' ? false : v;
-        return {
-          ...red,
-          bools: [
-            ...red.bools,
-            {
-              key: translations[k] || k,
-              value: bool
-                ? '<span style="color: green;">&#10004;</span>'
-                : '<span style="color: red;">&#10060;</span>',
-            },
-          ],
-        };
-      }
-      return {
-        ...red,
-        partials: [
-          ...red.partials,
-          { key: translations[k] || k, value: translations[v] || v },
-        ],
-      };
-    },
-    { partials: [], bools: [] }
+  const partialsAndBooleans = parsePartialsAndBooleans(
+    keys,
+    translations,
+    validations.validationWhitelist
   );
 
   const templateData = {
     ...translations,
     ...keys,
     domain,
-    mailto: keys.mail,
-    partials: partials.sort(sortByKey),
-    bools: bools.sort(sortByKey),
+    ...partialsAndBooleans,
   };
 
   const params: SES.SendTemplatedEmailRequest = {
@@ -76,12 +44,11 @@ export default async (configSet: ConfigSet) => {
   const result = {
     presendTimestamp: Date(),
     domain,
-    keys,
-    config: configSet,
     params: {
       ...params,
       TemplateData: templateData,
     },
+    config: configSet,
   };
 
   try {
@@ -94,7 +61,7 @@ export default async (configSet: ConfigSet) => {
       result
     );
   } catch (error) {
-    console.error(error);
+    Logger.error(error);
     return httpResponse(error.statusCode || 400, error.message, {
       error,
       ...result,

@@ -3,6 +3,7 @@ import { camelCase } from 'change-case';
 import { writeFileSync } from 'fs';
 import { resolve } from 'path';
 import { VALIDATIONS } from '../config';
+import { Logger } from '../lib/utils';
 
 declare type KeyValueMap = {
   [property: string]: string;
@@ -72,13 +73,13 @@ const parse = (env): ParsedDomainConfigs => {
     const parsedConfigs = Object.values(config).filter(Boolean).length;
     if (parsedConfigs !== 3) {
       if (parsedConfigs) {
-        console.error(
+        Logger.error(
           `Config for "${config.domain}" missing keys - please check environment variables`
         );
         index++;
         continue;
       } else {
-        console.log(`Parsed ${index} configs`);
+        Logger.log(`Parsed ${index} configs`);
         break;
       }
     }
@@ -103,6 +104,6 @@ export default parse;
 if (process.env.CREATE_CONFIG_FILE === '1') {
   config();
   const file = resolve(__dirname, '..', '.env.json');
-  console.log(`Parsed environment variables saved to config file "${file}"`);
+  Logger.log(`Parsed environment variables saved to config file "${file}"`);
   writeFileSync(file, JSON.stringify(parse(process.env), null, 2));
 }

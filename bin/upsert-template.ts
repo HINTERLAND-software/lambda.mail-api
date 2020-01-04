@@ -2,6 +2,7 @@ import { config } from 'dotenv';
 import { SES } from 'aws-sdk';
 import { readFileSync } from 'fs';
 import { resolve } from 'path';
+import { Logger } from '../lib/utils';
 
 config();
 
@@ -27,13 +28,13 @@ const params: SES.UpdateTemplateRequest = {
 };
 
 const updateTemplate = async (params: SES.UpdateTemplateRequest) => {
-  console.log('Attempting to update existing template.');
+  Logger.log('Attempting to update existing template.');
   const res = await ses.updateTemplate(params).promise();
   return { method: 'updateTemplate', ...res };
 };
 
 const createTemplate = async (params: SES.UpdateTemplateRequest) => {
-  console.log('Attempting to create new template.');
+  Logger.log('Attempting to create new template.');
   const res = await ses.createTemplate(params).promise();
   return { method: 'createTemplate', ...res };
 };
@@ -44,11 +45,11 @@ const upsert = async () => {
     return res;
   } catch (error) {
     if (error.code !== 'TemplateDoesNotExist') throw error;
-    console.log(error.message);
+    Logger.log(error.message);
     return createTemplate(params);
   }
 };
 
 upsert()
-  .then(console.log)
-  .catch(console.error);
+  .then(Logger.log)
+  .catch(Logger.error);

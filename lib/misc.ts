@@ -1,5 +1,4 @@
 import { translations } from '../config';
-import { APIGatewayProxyResult } from 'aws-lambda';
 import { existsSync, readFileSync } from 'fs';
 import { resolve } from 'path';
 import parseEnvironment, {
@@ -7,44 +6,14 @@ import parseEnvironment, {
   DomainConfig,
 } from '../bin/parse-environment';
 import { config as dotEnv } from 'dotenv';
-import { KeyValuePairs } from '../handler';
-
-/**
- * Handle the http response
- *
- * @param {number} statusCode
- * @param {string} message
- * @param {any} [input='']
- * @returns {APIGatewayProxyResult}
- */
-export const httpResponse = (
-  statusCode: number,
-  message: string,
-  input: any = ''
-): APIGatewayProxyResult => {
-  // log to cloudwatch if not test
-  if (process.env.NODE_ENV !== 'test') {
-    console.log(JSON.stringify({ statusCode, message, input }, null, 2));
-  }
-  return {
-    statusCode,
-    headers: {
-      'Access-Control-Allow-Origin': '*',
-      'Access-Control-Allow-Credentials': '*',
-    },
-    body: JSON.stringify({
-      message,
-      input,
-    }),
-  };
-};
+import { KeyValueMap } from '../handler';
 
 /**
  * Load config from file or environment
  *
  * @returns {ParsedDomainConfigs}
  */
-const checkForConfig = (): ParsedDomainConfigs => {
+export const parseConfig = (): ParsedDomainConfigs => {
   const envFile = resolve(__dirname, '..', '.env.json');
   if (existsSync(envFile)) {
     return JSON.parse(readFileSync(envFile, 'utf-8'));
@@ -54,19 +23,25 @@ const checkForConfig = (): ParsedDomainConfigs => {
 };
 
 /**
- * Get the fallback of the configuration
+ * Get the fallback (lowest index) of the configuration
  *
  * @param {ParsedDomainConfigs} config
  * @returns {DomainConfig}
  */
 const getFallback = (config: ParsedDomainConfigs): DomainConfig => {
-  const [key] = Object.entries(config).find(([, value]) => value.index === 0);
-  return config[key];
+  const { value } = Object.values(config).reduce(
+    (red, value) => {
+      if (value.index > red.lowestIndex) return red;
+      return { value, lowestIndex: value.index };
+    },
+    { value: null, lowestIndex: Object.keys(config).length }
+  );
+  return value;
 };
 
 export declare type ConfigSet = {
-  keys: KeyValuePairs;
-  translations: KeyValuePairs;
+  keys: KeyValueMap;
+  translations: KeyValueMap;
   environment: string;
   recipient: string;
   recipientForced: string | undefined;
@@ -77,11 +52,11 @@ export declare type ConfigSet = {
  * Get configuration set according to domain
  *
  * @param {string} domain
- * @param {KeyValuePairs} keys
+ * @param {KeyValueMap} keys
  * @returns {ConfigSet}
  */
-export const getConfig = (domain: string, keys: KeyValuePairs): ConfigSet => {
-  const envConfig = checkForConfig();
+export const getConfig = (domain: string, keys: KeyValueMap): ConfigSet => {
+  const envConfig = parseConfig();
   const fallback = getFallback(envConfig);
   const self = `${fallback.config.receiver}@${fallback.config.domain}`;
 
@@ -145,4 +120,66 @@ export const validateRequest = (config: ConfigSet): void => {
     error.code = 400;
     throw error;
   }
+};
+
+export declare type KeyValuePairs = {
+  key: string;
+  value: string | number | boolean;
+};
+
+declare type PartialsAndBooleans = {
+  partials: KeyValuePairs[];
+  booleans: KeyValuePairs[];
+};
+
+const sort = (array: KeyValuePairs[]): KeyValuePairs[] =>
+  array.sort((a, b) => a.key.localeCompare(b.key));
+
+export const parsePartialsAndBooleans = (
+  keys: KeyValueMap,
+  translations: KeyValueMap,
+  ignoredKeys: string[]
+): PartialsAndBooleans => {
+  const { partials, booleans } = Object.entries(keys).reduce(
+    (partialsAndBooleans, [k, v]) => {
+      if (
+        v === undefined ||
+        v === '' ||
+        v === null ||
+        ignoredKeys.some(field => field === k)
+      ) {
+        return partialsAndBooleans;
+      }
+
+      if (v === true || v === 'true' || v === false || v === 'false') {
+        const bool = v === 'true' ? true : v === 'false' ? false : v;
+        return {
+          ...partialsAndBooleans,
+          booleans: [
+            ...partialsAndBooleans.booleans,
+            {
+              key: translations[k] || k,
+              value: bool
+                ? '<span style="color: green;">&#10004;</span>'
+                : '<span style="color: red;">&#10060;</span>',
+            },
+          ],
+        };
+      }
+
+      return {
+        ...partialsAndBooleans,
+        partials: [
+          ...partialsAndBooleans.partials,
+          { key: translations[k] || k, value: translations[v] || v },
+        ],
+      };
+    },
+    { partials: [], booleans: [] }
+  );
+
+  return {
+    partials: sort(partials),
+    booleans: sort(booleans),
+  };
 };

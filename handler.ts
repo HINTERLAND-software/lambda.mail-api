@@ -6,14 +6,14 @@ import {
 import 'source-map-support/register';
 
 import {
-  httpResponse,
   getConfig,
   ConfigSet,
   validateRequest,
 } from './lib/misc';
 import sendmail from './lib/sendmail';
+import { Logger, httpResponse } from './lib/utils';
 
-export declare type KeyValuePairs = {
+export declare type KeyValueMap = {
   [property: string]: string | number | boolean;
 };
 
@@ -23,7 +23,7 @@ export const send: APIGatewayProxyHandler = async (
   let { body, pathParameters = {} } = event;
   const { domain } = pathParameters;
 
-  const parsedBody: KeyValuePairs =
+  const parsedBody: KeyValueMap =
     typeof body === 'string' ? JSON.parse(body) : body;
 
   let config: ConfigSet;
@@ -32,7 +32,7 @@ export const send: APIGatewayProxyHandler = async (
     validateRequest(config);
     return sendmail(config);
   } catch (err) {
-    console.error(err);
+    Logger.error(err);
     return httpResponse(err.statusCode, err.message, {
       body: parsedBody,
       config,

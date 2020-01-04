@@ -43,8 +43,8 @@ custom:
   # https://github.com/amplify-education/serverless-domain-manager
   stage: ${opt:stage, self:provider.stage}
   domains:
-    production: lapi.johannroehl.de
-    dev: dev-lapi.johannroehl.de
+    production: ${env:PRODUCTION_DOMAIN}
+    dev: ${env:DEV_DOMAIN}
   customDomain:
     basePath: mail
     domainName: ${self:custom.domains.${self:custom.stage}}

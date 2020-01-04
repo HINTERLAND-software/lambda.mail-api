@@ -59,7 +59,7 @@ export default async (configSet: ConfigSet) => {
     ...translations,
     ...keys,
     domain,
-    from: keys.mail,
+    mailto: keys.mail,
     partials: partials.sort(sortByKey),
     bools: bools.sort(sortByKey),
   };

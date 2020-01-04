@@ -94,13 +94,14 @@ export const getConfig = (domain: string, keys: KeyValuePairs): ConfigSet => {
   const environment =
     process.env.JEST_WORKER_ID !== undefined ? 'test' : process.env.STAGE;
 
-  const recipient = `${senderConfig.config.receiver}@${senderConfig.config.domain}`;
+  const {
+    validations: { overrideFor = [] },
+    config: { receiver },
+  } = senderConfig;
 
-  console.log(senderConfig.validations);
+  const recipient = `${receiver}@${domain}`;
 
-  const overrideRecipient = senderConfig.validations.overrideFor.some(o =>
-    (<string>mail).includes(o)
-  );
+  const overrideRecipient = overrideFor.some(o => (<string>mail).includes(o));
   let recipientForced;
   if (overrideRecipient || !environment.match(/(production|test)/i)) {
     recipientForced = self;
@@ -114,4 +115,34 @@ export const getConfig = (domain: string, keys: KeyValuePairs): ConfigSet => {
     recipientForced,
     config: senderConfig,
   };
+};
+
+class ResponseError extends Error {
+  code: number;
+}
+
+export const validateRequest = (config: ConfigSet): void => {
+  const {
+    keys,
+    config: {
+      validations: { validationBlacklist, validationRequired },
+    },
+  } = config;
+  const error = new ResponseError();
+
+  // honeypot triggered
+  const invalidField = validationBlacklist.filter(field => keys[field]);
+  if (invalidField.length) {
+    error.message = `Invalid field "${invalidField.join('", "')}" used`;
+    error.code = 200;
+    throw error;
+  }
+
+  // missing required fields
+  const missingFields = validationRequired.filter(field => !keys[field]);
+  if (missingFields.length) {
+    error.message = `No "${missingFields.join('", "')}" field specified`;
+    error.code = 400;
+    throw error;
+  }
 };

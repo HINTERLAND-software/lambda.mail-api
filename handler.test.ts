@@ -1,4 +1,5 @@
 import { send } from './handler';
+import { APIGatewayProxyEvent } from 'aws-lambda';
 
 jest.mock('./lib/misc', () => ({
   httpResponse: (...cb) => [...cb],
@@ -24,7 +25,11 @@ jest.mock('./lib/sendmail', () => (config, keys, recipient) => ({
 
 describe('handler', () => {
   test('sent error message', () => {
-    return send({ body: {}, pathParameters: {} }).then(([code, msg, input]) => {
+    return send(
+      <APIGatewayProxyEvent>{ body: '', pathParameters: {} },
+      undefined,
+      undefined
+    ).then(([code, msg, input]) => {
       expect(code).toBe(400);
       expect(msg).toBe('No "mail", "name", "message" field specified');
       expect(input).toEqual({

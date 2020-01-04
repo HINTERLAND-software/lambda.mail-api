@@ -1,45 +1,25 @@
-import { APIGatewayProxyHandler, APIGatewayProxyEvent } from 'aws-lambda';
+import {
+  APIGatewayProxyHandler,
+  APIGatewayProxyEvent,
+  APIGatewayProxyResult,
+} from 'aws-lambda';
 import 'source-map-support/register';
-import { httpResponse, getConfig, ConfigSet } from './lib/misc';
+
+import {
+  httpResponse,
+  getConfig,
+  ConfigSet,
+  validateRequest,
+} from './lib/misc';
 import sendmail from './lib/sendmail';
 
 export declare type KeyValuePairs = {
   [property: string]: string | number | boolean;
 };
 
-class ResponseError extends Error {
-  code: number;
-}
-
-const validateRequest = (config: ConfigSet): void => {
-  const {
-    keys,
-    config: {
-      validations: { validationBlacklist, validationRequired },
-    },
-  } = config;
-  const error = new ResponseError();
-
-  // honeypot triggered
-  const invalidField = validationBlacklist.filter(field => keys[field]);
-  if (invalidField.length) {
-    error.message = `Invalid field "${invalidField.join('", "')}" used`;
-    error.code = 200;
-    throw error;
-  }
-
-  // missing required fields
-  const missingFields = validationRequired.filter(field => !keys[field]);
-  if (missingFields.length) {
-    error.message = `No "${missingFields.join('", "')}" field specified`;
-    error.code = 400;
-    throw error;
-  }
-};
-
 export const send: APIGatewayProxyHandler = async (
   event: APIGatewayProxyEvent
-) => {
+): Promise<APIGatewayProxyResult> => {
   let { body, pathParameters = {} } = event;
   const { domain } = pathParameters;
 

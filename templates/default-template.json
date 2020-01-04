@@ -1,6 +1,6 @@
 {
   "TemplateName": "api-mail-template",
-  "SubjectPart": "{domain}: {header} {by} {name} ({mail})",
-  "HtmlPart": "{{ html }}",
-  "TextPart": "{{ text }}"
+  "SubjectPart": "{{domain}}: {{header}} {{from}} {{mail}}",
+  "HtmlPart": "{{html}}",
+  "TextPart": "{{text}}"
 }

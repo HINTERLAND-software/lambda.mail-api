@@ -2,21 +2,7 @@ import { config } from 'dotenv';
 import { camelCase } from 'change-case';
 import { writeFileSync } from 'fs';
 import { resolve } from 'path';
-
-enum EnvVars {
-  Config = 'config',
-  Validations = 'validations',
-}
-
-const envVars = {
-  [EnvVars.Config]: ['DOMAIN', 'RECEIVER', 'SES_USER'],
-  [EnvVars.Validations]: [
-    'OVERRIDE_FOR',
-    'VALIDATION_BLACKLIST',
-    'VALIDATION_WHITELIST',
-    'VALIDATION_REQUIRED',
-  ],
-};
+import { VALIDATIONS } from '../config';
 
 declare type KeyValueMap = {
   [property: string]: string;
@@ -45,45 +31,56 @@ export declare type ParsedDomainConfigs = {
   [property: string]: DomainConfig;
 };
 
-const initParse = (env: KeyValueMap) => (
-  envVar: EnvVars,
-  i: number
-): Config | Validations => {
-  const keys = envVars[envVar];
+const initParse = (env: KeyValueMap) => ({
+  parseConfig: (i: number): Config => {
+    const value = env[`CONFIG_${i}`];
+    const config = <Config>{};
+    if (value) {
+      const [domain, receiver, sesUser] = value.split(' ');
+      config.domain = domain;
+      config.receiver = receiver;
+      config.sesUser = sesUser;
+    }
+    return config;
+  },
+  parseValidations: (i: number): Validations => {
+    return Object.entries(VALIDATIONS).reduce((parsed, [key, def]) => {
+      const keyIndex = `${key}_${i}`;
 
-  const parsed = keys.reduce((parsed, key) => {
-    const keyIndex = `${key}_${i}`;
-    const value = env[keyIndex] || env[key];
+      const value = env[keyIndex] || env[key] || def;
+      if (!value) return parsed;
 
-    if (!value) return parsed;
+      const property = camelCase(keyIndex.replace(`_${i}`, ''));
 
-    const property = camelCase(keyIndex.replace(`_${i}`, ''));
-
-    return {
-      ...parsed,
-      [property]: envVar === EnvVars.Validations ? value.split(' ') : value,
-    };
-  }, {});
-
-  return <Config | Validations>parsed;
-};
+      return {
+        ...parsed,
+        [property]: Array.isArray(value) ? value : value.split(' '),
+      };
+    }, <Validations>{});
+  },
+});
 
 const parse = (env): ParsedDomainConfigs => {
-  const parseKeys = initParse(env);
+  const { parseConfig, parseValidations } = initParse(env);
 
   let results = {};
   let index = 0;
   while (true) {
-    const config = <Config>parseKeys(EnvVars.Config, index);
-    const validations = <Validations>parseKeys(EnvVars.Validations, index);
+    const config = parseConfig(index);
+    const validations = parseValidations(index);
 
-    const parsedConfigs = Object.keys(config).length;
-    if (parsedConfigs !== envVars[EnvVars.Config].length) {
-      parsedConfigs &&
+    const parsedConfigs = Object.values(config).filter(Boolean).length;
+    if (parsedConfigs !== 3) {
+      if (parsedConfigs) {
         console.error(
-          `Config for "${config.domain}" missing keys - please check environment`
+          `Config for "${config.domain}" missing keys - please check environment variables`
         );
-      break;
+        index++;
+        continue;
+      } else {
+        console.log(`Parsed ${index} configs`);
+        break;
+      }
     }
 
     results = {

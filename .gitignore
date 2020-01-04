@@ -68,3 +68,5 @@ typings/
 
 # Webpack directories
 .webpack
+
+.vscode

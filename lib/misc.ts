@@ -76,7 +76,10 @@ export const getConfig = (domain: string, keys: KeyValueMap): ConfigSet => {
   if (!senderConfig) throw new Error(`Domain "${domain}" not set up`);
 
   const { mail = self } = keys;
-  const locales = translations[process.env.LOCALE] || translations.en;
+  const locales =
+    translations[
+      process.env.LOCALE ? process.env.LOCALE.toLowerCase() : 'en'
+    ] || translations.en;
 
   const environment =
     process.env.JEST_WORKER_ID !== undefined ? 'test' : process.env.STAGE;

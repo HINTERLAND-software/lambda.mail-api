@@ -9,14 +9,14 @@
   "scripts": {
     "lint": "prettier --write **/*",
     "test": "npm run lint && npm run jest",
-    "start:offline": "serverless offline --port 6060 start",
-    "start:offline:prod": "serverless offline --port 6060 -s production start",
+    "start:offline": "npm run parse:environment && serverless offline --port 6060 start",
+    "start:offline:prod": "npm run parse:environment && serverless offline --port 6060 -s production start",
     "upsert:template": "ts-node bin/upsert-template.ts",
     "parse:environment": "CREATE_CONFIG_FILE=1 ts-node bin/parse-environment.ts",
     "jest": "jest",
     "jest:watch": "jest --watch",
-    "deploy": "serverless deploy -s dev",
-    "deploy:prod": "serverless deploy -s production",
+    "deploy": "npm run parse:environment && serverless deploy -s dev",
+    "deploy:prod": "npm run parse:environment && serverless deploy -s production",
     "logs": "serverless logs -s dev -f sendmail",
     "logs:prod": "serverless logs -s production -f sendmail"
   },

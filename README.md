@@ -4,6 +4,10 @@
 
 AWS Lambda to process sent mail requests and forward them through a smtp mailer to the different recipients
 
+## Getting started
+
+Specify the domain configurations as [environment variables](#parse-environment-variables) and run `npm run parse:environment` before deploying the function or running it locally.
+
 ## Parse environment variables
 
 Specify configuration in `.env` file in project root directory:
@@ -11,23 +15,18 @@ Specify configuration in `.env` file in project root directory:
 ```bash
 # Default values (override default values specified in `./config.ts` file)
 ## List values are specified as whitespace delimited strings
-
-## THe mail will not contain whitelisted keys
-VALIDATION_WHITELIST="receiver honeypot"
-## The payload of the request will be checked for blacklisted keys
-VALIDATION_BLACKLIST="honeypot"
-## The payload of the request will be checked for missing required keys
-VALIDATION_REQUIRED="mail name message dataprivacy-disclaimer processing-disclaimer"
-## Override receiver mail when sender matches
-OVERRIDE_FOR="@foobar.com"
+VALIDATION_WHITELIST="receiver honeypot" # THe mail will not contain whitelisted keys
+VALIDATION_BLACKLIST="honeypot" # The payload of the request will be checked for blacklisted keys
+VALIDATION_REQUIRED="mail name message dataprivacy-disclaimer processing-disclaimer" # The payload of the request will be checked for missing required keys
+OVERRIDE_FOR="@foobar.com" # Override receiver mail when sender matches
 
 # Configuration sets
-
 ## Have to be specified as follows, with incrementing indexes
-## Domain SESUser(the user that is registered in aws sns) Receiver(the recipient of the mail)
-CONFIG_0="johannroehl.de no-reply mail"
-## Override default values for specific configuration with corresponding index
-VALIDATION_REQUIRED_0="required_0"
+CONFIG_0="johannroehl.de no-reply mail" # Domain SESUser(the user that is registered in aws sns) Receiver(the recipient of the mail)
+VALIDATION_REQUIRED_0="required_0" # Override default values for specific configuration with corresponding index
+
+# Additional environment variables you can use
+LOCALE="en" # Some translations are available for 'en' and 'de'
 ```
 
 Parse the environment to `.env.json` file

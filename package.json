@@ -1,0 +1,48 @@
+{
+  "name": "api-mail",
+  "version": "3.0.0",
+  "description": "Serverless aws lambda endpoint to deliver mails from contact forms",
+  "main": "handler.js",
+  "private": false,
+  "author": "jroehl <mail@johannroehl.de>",
+  "license": "MIT",
+  "scripts": {
+    "lint": "prettier --write **/*",
+    "test": "npm run lint && npm run jest",
+    "start:offline": "npm run parse:environment && serverless offline --port 6060 start",
+    "start:offline:prod": "npm run parse:environment && serverless offline --port 6060 -s production start",
+    "upsert:template": "ts-node bin/upsert-template.ts",
+    "parse:environment": "CREATE_CONFIG_FILE=1 ts-node bin/parse-environment.ts",
+    "jest": "jest",
+    "jest:watch": "jest --watch",
+    "deploy": "npm run parse:environment && serverless deploy -s dev",
+    "deploy:prod": "npm run parse:environment && serverless deploy -s production",
+    "logs": "serverless logs -s dev -f sendmail",
+    "logs:prod": "serverless logs -s production -f sendmail"
+  },
+  "devDependencies": {
+    "@types/aws-lambda": "^8.10.39",
+    "@types/jest": "^24.0.25",
+    "@types/node": "^13.1.4",
+    "jest": "^24.9.0",
+    "jest-cli": "^24.9.0",
+    "prettier": "^1.19.1",
+    "serverless": "^1.60.5",
+    "serverless-domain-manager": "^3.3.0",
+    "serverless-offline": "^5.12.1",
+    "serverless-plugin-aws-alerts": "^1.4.0",
+    "serverless-webpack": "^5.3.1",
+    "ts-jest": "^24.2.0",
+    "ts-loader": "^6.2.1",
+    "typescript": "^3.7.4",
+    "webpack": "^4.41.5",
+    "webpack-node-externals": "^1.7.2"
+  },
+  "dependencies": {
+    "aws-sdk": "^2.597.0",
+    "change-case": "^4.1.1",
+    "dotenv": "^8.2.0",
+    "source-map-support": "^0.5.16",
+    "ts-node": "^8.5.4"
+  }
+}

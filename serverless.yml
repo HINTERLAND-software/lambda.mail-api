@@ -1,0 +1,99 @@
+# Happy Coding!
+
+service: api-mail
+
+plugins:
+  - serverless-webpack
+  - serverless-plugin-aws-alerts
+  - serverless-domain-manager
+  - serverless-offline
+
+provider:
+  name: aws
+  runtime: nodejs12.x
+  region: eu-central-1
+  stage: dev # you can override this via the CLI argument
+  apiKeys:
+    - ${self:service}-key-${self:custom.stage}
+  apiGateway:
+    minimumCompressionSize: 1024 # Enable gzip compression for responses > 1 KB
+  usagePlan:
+    quota:
+      limit: 2000
+      period: MONTH
+    throttle:
+      burstLimit: 10
+      rateLimit: 5
+  environment: # Service wide environment variables
+    STAGE: ${self:custom.stage}
+    TEMPLATE_NAME: ${file(./templates/${env:TEMPLATE_NAME, "default-template"}.json):TemplateName}
+    AWS_SES_REGION: ${env:AWS_SES_REGION, "eu-west-1"}
+    AWS_NODEJS_CONNECTION_REUSE_ENABLED: 1
+    STRINGIFIED_CONFIG: ${file(./.env.json):string}
+    LOCALE: ${env:LOCALE, "en"}
+  iamRoleStatements:
+    - Effect: 'Allow'
+      Action:
+        - 'ses:SendEmail'
+        - 'ses:SendTemplatedEmail'
+      Resource: '*'
+
+custom:
+  webpack:
+    webpackConfig: ./webpack.config.js
+    includeModules: true
+  # https://github.com/amplify-education/serverless-domain-manager
+  stage: ${opt:stage, self:provider.stage}
+  domains:
+    production: ${env:PRODUCTION_DOMAIN}
+    dev: ${env:DEV_DOMAIN}
+  customDomain:
+    basePath: mail
+    domainName: ${self:custom.domains.${self:custom.stage}}
+    stage: ${self:custom.stage}
+    createRoute53Record: false
+  # https://github.com/ACloudGuru/serverless-plugin-aws-alerts
+  alerts:
+    topics:
+      alarm:
+        topic: arn:aws:sns:eu-central-1:009255630476:alert-Topic-N47IM5J07MP7
+    definitions: # these defaults are merged with your definitions
+      functionThrottles:
+        treatMissingData: notBreaching
+      functionErrors:
+        treatMissingData: notBreaching
+      functionInvocations:
+        threshold: 50 # override threshold
+        treatMissingData: notBreaching
+      functionDuration:
+        threshold: 4000 # override threshold
+        treatMissingData: notBreaching
+      statusCodeErrors:
+        metric: statusCodeErrors
+        threshold: 0
+        statistic: Sum
+        period: 60
+        evaluationPeriods: 1
+        comparisonOperator: GreaterThanThreshold
+        pattern: '{$.statusCode != 200}'
+        treatMissingData: missing
+    alarms:
+      - functionThrottles
+      - functionErrors
+      - functionInvocations
+      - functionDuration
+      - statusCodeErrors
+
+functions:
+  sendmail:
+    handler: handler.send
+    events:
+      - http:
+          private: true
+          cors: true
+          path: send/{domain}
+          method: post
+          request:
+            parameters:
+              paths:
+                domain: true

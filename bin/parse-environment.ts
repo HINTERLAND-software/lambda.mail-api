@@ -105,5 +105,14 @@ if (process.env.CREATE_CONFIG_FILE === '1') {
   config();
   const file = resolve(__dirname, '..', '.env.json');
   Logger.log(`Parsed environment variables saved to config file "${file}"`);
-  writeFileSync(file, JSON.stringify(parse(process.env), null, 2));
+  // writeFileSync(file, JSON.stringify(parse(process.env), null, 2));
+  const parsed = parse(process.env);
+  writeFileSync(
+    file,
+    JSON.stringify(
+      { config: parsed, string: `'${JSON.stringify(parsed)}'` },
+      null,
+      2
+    )
+  );
 }

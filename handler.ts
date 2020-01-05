@@ -5,11 +5,7 @@ import {
 } from 'aws-lambda';
 import 'source-map-support/register';
 
-import {
-  getConfig,
-  ConfigSet,
-  validateRequest,
-} from './lib/misc';
+import { getConfig, ConfigSet, validateRequest } from './lib/misc';
 import sendmail from './lib/sendmail';
 import { Logger, httpResponse } from './lib/utils';
 

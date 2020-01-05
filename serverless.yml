@@ -29,6 +29,8 @@ provider:
     TEMPLATE_NAME: ${file(./templates/${env:TEMPLATE_NAME, "default-template"}.json):TemplateName}
     AWS_SES_REGION: ${env:AWS_SES_REGION, "eu-west-1"}
     AWS_NODEJS_CONNECTION_REUSE_ENABLED: 1
+    STRINGIFIED_CONFIG: ${file(./.env.json):string}
+    LOCALE: ${env:LOCALE, "en"}
   iamRoleStatements:
     - Effect: 'Allow'
       Action:

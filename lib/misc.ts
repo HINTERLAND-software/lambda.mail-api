@@ -15,11 +15,22 @@ import { KeyValueMap } from '../handler';
  */
 export const parseConfig = (): ParsedDomainConfigs => {
   const envFile = resolve(__dirname, '..', '.env.json');
-  if (existsSync(envFile)) {
-    return JSON.parse(readFileSync(envFile, 'utf-8'));
+  let parsedConfig: ParsedDomainConfigs;
+  const { STRINGIFIED_CONFIG } = process.env;
+  if (STRINGIFIED_CONFIG) {
+    parsedConfig = JSON.parse(
+      STRINGIFIED_CONFIG.slice(1, STRINGIFIED_CONFIG.length - 1)
+    );
+  } else if (existsSync(envFile)) {
+    parsedConfig = JSON.parse(readFileSync(envFile, 'utf-8'));
+  } else {
+    dotEnv();
+    parsedConfig = parseEnvironment(process.env);
   }
-  dotEnv();
-  return parseEnvironment(process.env);
+  if (!parsedConfig || !Object.keys(parsedConfig).length) {
+    throw new Error('No domain configurations found');
+  }
+  return parsedConfig;
 };
 
 /**
@@ -36,6 +47,7 @@ const getFallback = (config: ParsedDomainConfigs): DomainConfig => {
     },
     { value: null, lowestIndex: Object.keys(config).length }
   );
+  if (!value) throw new Error('No fallback config found');
   return value;
 };
 

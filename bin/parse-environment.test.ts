@@ -10,8 +10,8 @@ describe('parse', () => {
         index: 0,
         config: {
           domain: 'johannroehl.de',
-          receiver: 'no-reply',
-          sesUser: 'mail',
+          sesUser: 'no-reply',
+          receiver: 'mail',
         },
         validations: {
           overrideFor: ['@foobar.com'],
@@ -24,8 +24,8 @@ describe('parse', () => {
         index: 1,
         config: {
           domain: 'foobar.com',
-          receiver: 'no-reply',
-          sesUser: 'service',
+          sesUser: 'no-reply',
+          receiver: 'service',
         },
         validations: {
           overrideFor: ['force_mail_1'],
@@ -38,8 +38,8 @@ describe('parse', () => {
         index: 2,
         config: {
           domain: 'foo.com',
-          receiver: 'no-reply',
-          sesUser: 'bar',
+          sesUser: 'no-reply',
+          receiver: 'bar',
         },
         validations: {
           overrideFor: ['@foobar.com'],
@@ -52,8 +52,8 @@ describe('parse', () => {
         index: 3,
         config: {
           domain: 'bar.com',
-          receiver: 'no-reply',
-          sesUser: 'foo',
+          sesUser: 'no-reply',
+          receiver: 'foo',
         },
         validations: {
           overrideFor: ['force_mail_3'],

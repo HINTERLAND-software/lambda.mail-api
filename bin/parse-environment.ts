@@ -37,10 +37,10 @@ const initParse = (env: KeyValueMap) => ({
     const value = env[`CONFIG_${i}`];
     const config = <Config>{};
     if (value) {
-      const [domain, receiver, sesUser] = value.split(' ');
+      const [domain, sesUser, receiver] = value.split(' ');
       config.domain = domain;
-      config.receiver = receiver;
       config.sesUser = sesUser;
+      config.receiver = receiver;
     }
     return config;
   },

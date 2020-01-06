@@ -26,7 +26,7 @@ jobs:
         run: npm ci
 
       - name: Set development env
-        if: !endsWith(github.ref, '/production')
+        if: "!endsWith(github.ref, '/production')"
         run: |
           echo "::set-env name=AWS_ACCOUNT_ID::${AWS_DEVELOPMENT_ACCOUNT}"
           echo "::set-env name=DEPLOY::npm run deploy"
@@ -34,7 +34,7 @@ jobs:
           AWS_DEVELOPMENT_ACCOUNT: ${{ secrets.AWS_DEVELOPMENT_ACCOUNT }}
 
       - name: Set production env
-        if: endsWith(github.ref, '/production')
+        if: "endsWith(github.ref, '/production')"
         run: |
           echo "::set-env name=AWS_ACCOUNT_ID::${AWS_PRODUCTION_ACCOUNT}"
           echo "::set-env name=DEPLOY::npm run deploy:production"

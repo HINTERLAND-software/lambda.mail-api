@@ -1,0 +1,65 @@
+name: 'Publish version'
+# on:
+#   push:
+#     branches:
+#       - master
+#       - production
+on: [pull_request]
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v1
+      - name: 'ci'
+        run: npm ci
+      - name: 'test'
+        run: npm run test
+
+  deploy:
+    runs-on: ubuntu-latest
+    needs: test
+    steps:
+      - uses: actions/checkout@v1
+
+      - name: 'ci'
+        run: npm ci
+
+      - name: Set development env
+        if: !endsWith(github.ref, '/production')
+        run: |
+          echo "::set-env name=AWS_ACCOUNT_ID::${AWS_DEVELOPMENT_ACCOUNT}"
+          echo "::set-env name=DEPLOY::npm run deploy"
+        env:
+          AWS_DEVELOPMENT_ACCOUNT: ${{ secrets.AWS_DEVELOPMENT_ACCOUNT }}
+
+      - name: Set production env
+        if: endsWith(github.ref, '/production')
+        run: |
+          echo "::set-env name=AWS_ACCOUNT_ID::${AWS_PRODUCTION_ACCOUNT}"
+          echo "::set-env name=DEPLOY::npm run deploy:production"
+        env:
+          AWS_PRODUCTION_ACCOUNT: ${{ secrets.AWS_PRODUCTION_ACCOUNT }}
+
+      - name: 'deploy'
+        run: |
+          ASSUME_ROLE_GIST=https://gist.github.com/jroehl/c0789a3c4dca94ecf6958a9f4e408b8a/raw/aws-assume-role.sh
+          echo "source <(curl -sL ${ASSUME_ROLE_GIST}) ${AWS_ACCOUNT_ID} ${SERVERLESS_ROLE} ${AWS_REGION} ${GITHUB_SHA}"
+
+          npm run upsert:template
+
+          eval ${DEPLOY}
+        env:
+          SERVERLESS_ROLE: ${{ secrets.SERVERLESS_ROLE }}
+          AWS_REGION: ${{ secrets.AWS_REGION }}
+          GITHUB_SHA: ${{ github.sha }}
+          # variables to parse the configuration dynamically on build
+          OVERRIDE_FOR: ${{ secrets.OVERRIDE_FOR }}
+          LOCALE: ${{ secrets.LOCALE }}
+          DEV_DOMAIN: ${{ secrets.DEV_DOMAIN }}
+          PRODUCTION_DOMAIN: ${{ secrets.PRODUCTION_DOMAIN }}
+          CONFIG_0: ${{ secrets.CONFIG_0 }}
+          CONFIG_1: ${{ secrets.CONFIG_1 }}
+          CONFIG_2: ${{ secrets.CONFIG_2 }}
+          CONFIG_3: ${{ secrets.CONFIG_3 }}
+          CONFIG_4: ${{ secrets.CONFIG_4 }}

@@ -36,7 +36,7 @@ jobs:
         if: "endsWith(github.ref, '/production')"
         run: |
           echo "::set-env name=AWS_ACCOUNT_ID::${AWS_PRODUCTION_ACCOUNT}"
-          echo "::set-env name=DEPLOY::npm run deploy:production"
+          echo "::set-env name=DEPLOY::npm run deploy:prod"
         env:
           AWS_PRODUCTION_ACCOUNT: ${{ secrets.AWS_PRODUCTION_ACCOUNT }}
 

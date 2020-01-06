@@ -1,10 +1,9 @@
-name: 'Publish version'
-# on:
-#   push:
-#     branches:
-#       - master
-#       - production
-on: [pull_request]
+name: 'Test and deploy'
+on:
+  push:
+    branches:
+      - master
+      - production
 
 jobs:
   test:
@@ -43,7 +42,7 @@ jobs:
 
       - name: 'deploy'
         run: |
-          echo "source <(curl -sL ${ASSUME_ROLE_GIST}) ${AWS_ACCOUNT_ID} ${AWS_SERVERLESS_ROLE} ${AWS_REGION} ${GITHUB_SHA}"
+          source <(curl -sL ${ASSUME_ROLE_GIST}) ${AWS_ACCOUNT_ID} ${AWS_SERVERLESS_ROLE} ${AWS_REGION} ${GITHUB_SHA}
 
           npm run upsert:template
 

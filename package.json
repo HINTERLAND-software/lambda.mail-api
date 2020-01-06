@@ -15,8 +15,8 @@
     "parse:environment": "CREATE_CONFIG_FILE=1 ts-node bin/parse-environment.ts",
     "jest": "jest",
     "jest:watch": "jest --watch",
-    "deploy": "npm run parse:environment && serverless deploy -s dev",
-    "deploy:prod": "npm run parse:environment && serverless deploy -s production",
+    "deploy": "npm run parse:environment && serverless deploy -s dev --conceal",
+    "deploy:prod": "npm run parse:environment && serverless deploy -s production --conceal",
     "logs": "serverless logs -s dev -f sendmail",
     "logs:prod": "serverless logs -s production -f sendmail"
   },

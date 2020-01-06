@@ -84,5 +84,4 @@ aws ses create-configuration-set-event-destination --configuration-set-name ${CS
 
 ## TODO
 
-- Migrate to GitHub actions
 - Documenation

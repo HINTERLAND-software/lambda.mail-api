@@ -9,8 +9,8 @@
   "scripts": {
     "lint": "prettier --write **/*",
     "test": "npm run lint && npm run jest",
-    "start:offline": "npm run parse:environment && serverless offline --port 6060 start",
-    "start:offline:prod": "npm run parse:environment && serverless offline --port 6060 -s production start",
+    "start:offline": "npm run parse:environment && serverless offline --httpPort 6060 start",
+    "start:offline:prod": "npm run parse:environment && serverless offline --httpPort 6060 -s production start",
     "upsert:template": "ts-node bin/upsert-template.ts",
     "parse:environment": "CREATE_CONFIG_FILE=1 ts-node bin/parse-environment.ts",
     "jest": "jest",
@@ -24,6 +24,7 @@
     "@types/aws-lambda": "^8.10.51",
     "@types/dompurify": "^2.0.1",
     "@types/jest": "^25.2.1",
+    "@types/jsdom": "^16.2.1",
     "@types/node": "^13.13.4",
     "jest": "^25.5.2",
     "jest-cli": "^25.5.2",
@@ -44,6 +45,7 @@
     "change-case": "^4.1.1",
     "dompurify": "^2.0.10",
     "dotenv": "^8.2.0",
+    "jsdom": "^16.2.2",
     "source-map-support": "^0.5.19",
     "ts-node": "^8.9.1"
   }

@@ -62,9 +62,7 @@ typings/
 .yarn-integrity
 
 # dotenv environment variables file
-.env
-.envrc
-.env.json
+.env*
 
 # Webpack directories
 .webpack

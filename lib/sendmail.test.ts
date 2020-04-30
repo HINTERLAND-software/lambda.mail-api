@@ -30,7 +30,7 @@ describe('sendmail', () => {
         };
       }
     };
-    return sendmail(<any>config).then(res => {
+    return sendmail(<any>config).then((res) => {
       expect(res.statusCode).toBe(400);
       expect(res.headers).toEqual({
         'Access-Control-Allow-Origin': '*',
@@ -75,7 +75,7 @@ describe('sendmail', () => {
         };
       }
     };
-    return sendmail(<any>config).then(res => {
+    return sendmail(<any>config).then((res) => {
       expect(res.statusCode).toBe(200);
       expect(res.headers).toEqual({
         'Access-Control-Allow-Origin': '*',

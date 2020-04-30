@@ -51,7 +51,7 @@ export EMAIL=no-reply@johannroehl.de
 2. Verify email(s)
 
 ```bash
-aws ses verify-email-identity --email-address user@example.com --region $AWS_SES_REGION
+aws ses verify-email-identity --email-address user@example.com --region ${AWS_SES_REGION}
 # or
 VERIFIED_MAILS=$(cat .env.json | jq -cr '.config[] | "\(.config.sesUser)@\(.config.domain)"')
 while read line; do

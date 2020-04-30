@@ -91,7 +91,7 @@ export const getConfig = (domain: string, keys: KeyValueMap): ConfigSet => {
 
   const recipient = `${receiver}@${domain}`;
 
-  const overrideRecipient = overrideFor.some(o => (<string>mail).includes(o));
+  const overrideRecipient = overrideFor.some((o) => (<string>mail).includes(o));
   let recipientForced;
   if (overrideRecipient || !environment.match(/(production|test)/i)) {
     recipientForced = self;
@@ -121,7 +121,7 @@ export const validateRequest = (config: ConfigSet): void => {
   const error = new ResponseError();
 
   // honeypot triggered
-  const invalidField = validationBlacklist.filter(field => keys[field]);
+  const invalidField = validationBlacklist.filter((field) => keys[field]);
   if (invalidField.length) {
     error.message = `Invalid field "${invalidField.join('", "')}" used`;
     error.code = 200;
@@ -129,7 +129,7 @@ export const validateRequest = (config: ConfigSet): void => {
   }
 
   // missing required fields
-  const missingFields = validationRequired.filter(field => !keys[field]);
+  const missingFields = validationRequired.filter((field) => !keys[field]);
   if (missingFields.length) {
     error.message = `No "${missingFields.join('", "')}" field specified`;
     error.code = 400;
@@ -161,7 +161,7 @@ export const parsePartialsAndBooleans = (
         v === undefined ||
         v === '' ||
         v === null ||
-        ignoredKeys.some(field => field === k)
+        ignoredKeys.some((field) => field === k)
       ) {
         return partialsAndBooleans;
       }

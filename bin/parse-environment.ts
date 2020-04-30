@@ -1,5 +1,5 @@
-import { config } from 'dotenv';
 import { camelCase } from 'change-case';
+import { config } from 'dotenv';
 import { writeFileSync } from 'fs';
 import { resolve } from 'path';
 import { VALIDATIONS } from '../config';

@@ -1,12 +1,23 @@
-import { translations } from '../config';
+import DOMPurify from 'dompurify';
+import { config as dotEnv } from 'dotenv';
 import { existsSync, readFileSync } from 'fs';
 import { resolve } from 'path';
 import parseEnvironment, {
-  ParsedDomainConfigs,
   DomainConfig,
+  ParsedDomainConfigs,
 } from '../bin/parse-environment';
-import { config as dotEnv } from 'dotenv';
+import { translations } from '../config';
 import { KeyValueMap } from '../handler';
+
+/**
+ * Sanitize string
+ *
+ * @param {string} source
+ * @returns {string}
+ */
+export const sanitizeString = (source: string): string => {
+  return DOMPurify.sanitize(source);
+};
 
 /**
  * Load config from file or environment
@@ -147,8 +158,13 @@ declare type PartialsAndBooleans = {
   booleans: KeyValuePairs[];
 };
 
-const sort = (array: KeyValuePairs[]): KeyValuePairs[] =>
-  array.sort((a, b) => a.key.localeCompare(b.key));
+const byKey = (a: KeyValuePairs, b: KeyValuePairs): number =>
+  a.key.localeCompare(b.key);
+
+const sanitize = ({ key, value }: KeyValuePairs): KeyValuePairs => ({
+  key: sanitizeString(key),
+  value: sanitizeString(`${value}`),
+});
 
 export const parsePartialsAndBooleans = (
   keys: KeyValueMap,
@@ -175,7 +191,7 @@ export const parsePartialsAndBooleans = (
             {
               key: translations[k] || k,
               value: bool
-                ? '<span style="color: green;">&#10004;</span>'
+                ? '<span style="color: green;">&#9989;</span>'
                 : '<span style="color: red;">&#10060;</span>',
             },
           ],
@@ -186,7 +202,10 @@ export const parsePartialsAndBooleans = (
         ...partialsAndBooleans,
         partials: [
           ...partialsAndBooleans.partials,
-          { key: translations[k] || k, value: translations[v] || v },
+          {
+            key: translations[k] || k,
+            value: translations[v] || v,
+          },
         ],
       };
     },
@@ -194,7 +213,7 @@ export const parsePartialsAndBooleans = (
   );
 
   return {
-    partials: sort(partials),
-    booleans: sort(booleans),
+    partials: partials.sort(byKey).map(sanitize),
+    booleans: booleans.sort(byKey).map(sanitize),
   };
 };

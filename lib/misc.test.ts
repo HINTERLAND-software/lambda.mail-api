@@ -1,7 +1,6 @@
-import * as misc from './misc';
 import { ParsedDomainConfigs } from '../bin/parse-environment';
-
 import { translations } from '../config';
+import * as misc from './misc';
 
 const config = <ParsedDomainConfigs>{
   'johannroehl.de': {
@@ -150,7 +149,7 @@ describe('validateRequest', () => {
 });
 
 describe('parsePartialsAndBooleans', () => {
-  test('parse and sort partials and booleans', () => {
+  test('parse, sort and sanitize partials and booleans', () => {
     const res = misc.parsePartialsAndBooleans(
       {
         mail: 'mail@johannroehl.de',
@@ -175,19 +174,19 @@ describe('parsePartialsAndBooleans', () => {
       booleans: [
         {
           key: 'boolFalse',
-          value: '<span style="color: red;">&#10060;</span>',
+          value: '<span style="color: red;">❌</span>',
         },
         {
           key: 'boolTrue',
-          value: '<span style="color: green;">&#10004;</span>',
+          value: '<span style="color: green;">✅</span>',
         },
         {
           key: 'stringFalse',
-          value: '<span style="color: red;">&#10060;</span>',
+          value: '<span style="color: red;">❌</span>',
         },
         {
           key: 'stringTrue',
-          value: '<span style="color: green;">&#10004;</span>',
+          value: '<span style="color: green;">✅</span>',
         },
       ],
     });

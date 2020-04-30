@@ -1,11 +1,10 @@
+import { translations } from '../config';
 import * as misc from './misc';
+import sendmail from './sendmail';
 // import * as AWS from 'aws-sdk';
 const AWS = require('aws-sdk');
 
 jest.mock('aws-sdk');
-
-import sendmail from './sendmail';
-import { translations } from '../config';
 
 const config = {
   keys: { mail: 'foo@bar.com', foo: true, bar: 'false' },

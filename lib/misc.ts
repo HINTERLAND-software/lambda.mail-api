@@ -1,6 +1,5 @@
-import createDOMPurify from 'dompurify';
-import { JSDOM } from 'jsdom';
 import { config as dotEnv } from 'dotenv';
+import { filterXSS } from 'xss';
 import { existsSync, readFileSync } from 'fs';
 import { resolve } from 'path';
 import parseEnvironment, {
@@ -17,9 +16,7 @@ import { KeyValueMap } from '../handler';
  * @returns {string}
  */
 export const sanitizeString = (source: string): string => {
-  const { window } = new JSDOM('');
-  const DOMPurify = createDOMPurify(window);
-  return DOMPurify.sanitize(source);
+  return filterXSS(source);
 };
 
 /**

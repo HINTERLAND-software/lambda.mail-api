@@ -1,11 +1,10 @@
+import { translations } from '../config';
 import * as misc from './misc';
+import sendmail from './sendmail';
 // import * as AWS from 'aws-sdk';
 const AWS = require('aws-sdk');
 
 jest.mock('aws-sdk');
-
-import sendmail from './sendmail';
-import { translations } from '../config';
 
 const config = {
   keys: { mail: 'foo@bar.com', foo: true, bar: 'false' },
@@ -30,7 +29,7 @@ describe('sendmail', () => {
         };
       }
     };
-    return sendmail(<any>config).then(res => {
+    return sendmail(<any>config).then((res) => {
       expect(res.statusCode).toBe(400);
       expect(res.headers).toEqual({
         'Access-Control-Allow-Origin': '*',
@@ -75,7 +74,7 @@ describe('sendmail', () => {
         };
       }
     };
-    return sendmail(<any>config).then(res => {
+    return sendmail(<any>config).then((res) => {
       expect(res.statusCode).toBe(200);
       expect(res.headers).toEqual({
         'Access-Control-Allow-Origin': '*',

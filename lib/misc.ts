@@ -1,12 +1,23 @@
-import { translations } from '../config';
+import { config as dotEnv } from 'dotenv';
+import { filterXSS } from 'xss';
 import { existsSync, readFileSync } from 'fs';
 import { resolve } from 'path';
 import parseEnvironment, {
-  ParsedDomainConfigs,
   DomainConfig,
+  ParsedDomainConfigs,
 } from '../bin/parse-environment';
-import { config as dotEnv } from 'dotenv';
+import { translations } from '../config';
 import { KeyValueMap } from '../handler';
+
+/**
+ * Sanitize string
+ *
+ * @param {string} source
+ * @returns {string}
+ */
+export const sanitizeString = (source: string): string => {
+  return filterXSS(source);
+};
 
 /**
  * Load config from file or environment
@@ -91,7 +102,7 @@ export const getConfig = (domain: string, keys: KeyValueMap): ConfigSet => {
 
   const recipient = `${receiver}@${domain}`;
 
-  const overrideRecipient = overrideFor.some(o => (<string>mail).includes(o));
+  const overrideRecipient = overrideFor.some((o) => (<string>mail).includes(o));
   let recipientForced;
   if (overrideRecipient || !environment.match(/(production|test)/i)) {
     recipientForced = self;
@@ -121,7 +132,7 @@ export const validateRequest = (config: ConfigSet): void => {
   const error = new ResponseError();
 
   // honeypot triggered
-  const invalidField = validationBlacklist.filter(field => keys[field]);
+  const invalidField = validationBlacklist.filter((field) => keys[field]);
   if (invalidField.length) {
     error.message = `Invalid field "${invalidField.join('", "')}" used`;
     error.code = 200;
@@ -129,7 +140,7 @@ export const validateRequest = (config: ConfigSet): void => {
   }
 
   // missing required fields
-  const missingFields = validationRequired.filter(field => !keys[field]);
+  const missingFields = validationRequired.filter((field) => !keys[field]);
   if (missingFields.length) {
     error.message = `No "${missingFields.join('", "')}" field specified`;
     error.code = 400;
@@ -147,8 +158,13 @@ declare type PartialsAndBooleans = {
   booleans: KeyValuePairs[];
 };
 
-const sort = (array: KeyValuePairs[]): KeyValuePairs[] =>
-  array.sort((a, b) => a.key.localeCompare(b.key));
+const byKey = (a: KeyValuePairs, b: KeyValuePairs): number =>
+  a.key.localeCompare(b.key);
+
+const sanitize = ({ key, value }: KeyValuePairs): KeyValuePairs => ({
+  key: sanitizeString(key),
+  value: sanitizeString(`${value}`),
+});
 
 export const parsePartialsAndBooleans = (
   keys: KeyValueMap,
@@ -161,7 +177,7 @@ export const parsePartialsAndBooleans = (
         v === undefined ||
         v === '' ||
         v === null ||
-        ignoredKeys.some(field => field === k)
+        ignoredKeys.some((field) => field === k)
       ) {
         return partialsAndBooleans;
       }
@@ -175,7 +191,7 @@ export const parsePartialsAndBooleans = (
             {
               key: translations[k] || k,
               value: bool
-                ? '<span style="color: green;">&#10004;</span>'
+                ? '<span style="color: green;">&#9989;</span>'
                 : '<span style="color: red;">&#10060;</span>',
             },
           ],
@@ -186,7 +202,10 @@ export const parsePartialsAndBooleans = (
         ...partialsAndBooleans,
         partials: [
           ...partialsAndBooleans.partials,
-          { key: translations[k] || k, value: translations[v] || v },
+          {
+            key: translations[k] || k,
+            value: translations[v] || v,
+          },
         ],
       };
     },
@@ -194,7 +213,7 @@ export const parsePartialsAndBooleans = (
   );
 
   return {
-    partials: sort(partials),
-    booleans: sort(booleans),
+    partials: partials.sort(byKey).map(sanitize),
+    booleans: booleans.sort(byKey).map(sanitize),
   };
 };

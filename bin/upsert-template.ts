@@ -1,5 +1,5 @@
-import { config } from 'dotenv';
 import { SES } from 'aws-sdk';
+import { config } from 'dotenv';
 import { readFileSync } from 'fs';
 import { resolve } from 'path';
 import { Logger } from '../lib/utils';
@@ -13,7 +13,7 @@ const {
 
 const ses = new SES({ region: AWS_SES_REGION });
 
-const getTemplate = fileEnding =>
+const getTemplate = (fileEnding) =>
   readFileSync(
     resolve(__dirname, '..', 'templates', `${TEMPLATE_NAME}.${fileEnding}`),
     'utf-8'
@@ -50,6 +50,4 @@ const upsert = async () => {
   }
 };
 
-upsert()
-  .then(Logger.log)
-  .catch(Logger.error);
+upsert().then(Logger.log).catch(Logger.error);

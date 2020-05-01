@@ -1,7 +1,6 @@
-import * as misc from './misc';
 import { ParsedDomainConfigs } from '../bin/parse-environment';
-
 import { translations } from '../config';
+import * as misc from './misc';
 
 const config = <ParsedDomainConfigs>{
   'johannroehl.de': {
@@ -150,13 +149,14 @@ describe('validateRequest', () => {
 });
 
 describe('parsePartialsAndBooleans', () => {
-  test('parse and sort partials and booleans', () => {
+  test('parse, sort and sanitize partials and booleans', () => {
     const res = misc.parsePartialsAndBooleans(
       {
         mail: 'mail@johannroehl.de',
         empty: '',
         undef: undefined,
         name: 'Johann',
+        xss: '<div><script>alert("evil");</script></div>',
         ignored: 'ignored',
         stringTrue: 'true',
         stringFalse: 'false',
@@ -171,23 +171,27 @@ describe('parsePartialsAndBooleans', () => {
       partials: [
         { key: 'Name', value: 'Johann' },
         { key: 'Sender', value: 'mail@johannroehl.de' },
+        {
+          key: 'xss',
+          value: '<div>&lt;script&gt;alert("evil");&lt;/script&gt;</div>',
+        },
       ],
       booleans: [
         {
           key: 'boolFalse',
-          value: '<span style="color: red;">&#10060;</span>',
+          value: '<span>&#10060;</span>',
         },
         {
           key: 'boolTrue',
-          value: '<span style="color: green;">&#10004;</span>',
+          value: '<span>&#9989;</span>',
         },
         {
           key: 'stringFalse',
-          value: '<span style="color: red;">&#10060;</span>',
+          value: '<span>&#10060;</span>',
         },
         {
           key: 'stringTrue',
-          value: '<span style="color: green;">&#10004;</span>',
+          value: '<span>&#9989;</span>',
         },
       ],
     });

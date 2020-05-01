@@ -1,7 +1,5 @@
 # Mail API
 
-[![Circle CI](https://circleci.com/gh/jroehl/lambda.mail-api/tree/master.svg?style=shield&circle-token=f6de3240c2da0ef7594cf3749b404adf7541d8d3)](https://circleci.com/gh/jroehl/lambda.mail-api/tree/master)
-
 AWS Lambda to process mail requests sent by POST request and forward them using AWS SES
 
 ## Getting started
@@ -53,7 +51,7 @@ export EMAIL=no-reply@johannroehl.de
 2. Verify email(s)
 
 ```bash
-aws ses verify-email-identity --email-address user@example.com --region $AWS_SES_REGION
+aws ses verify-email-identity --email-address user@example.com --region ${AWS_SES_REGION}
 # or
 VERIFIED_MAILS=$(cat .env.json | jq -cr '.config[] | "\(.config.sesUser)@\(.config.domain)"')
 while read line; do

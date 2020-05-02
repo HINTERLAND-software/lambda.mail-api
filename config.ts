@@ -1,4 +1,4 @@
-const copyright = `© 2013 - ${new Date().getFullYear()} jr | development`;
+const copyright = `© 2013 - ${new Date().getFullYear()} <a href="https://hinterland.software">HINTERLAND software</a>`;
 
 export const VALIDATIONS = {
   OVERRIDE_FOR: [],

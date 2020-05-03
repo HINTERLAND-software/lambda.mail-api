@@ -5,13 +5,10 @@ import {
 } from 'aws-lambda';
 import 'source-map-support/register';
 
-import { getConfig, ConfigSet, validateRequest } from './lib/misc';
+import { prepareConfig, validateRequest } from './lib/misc';
 import sendmail from './lib/sendmail';
 import { Logger, httpResponse } from './lib/utils';
-
-export declare type KeyValueMap = {
-  [property: string]: string | number | boolean;
-};
+import { KeyValueMap, ParsedConfig } from './types';
 
 export const send: APIGatewayProxyHandler = async (
   event: APIGatewayProxyEvent
@@ -22,14 +19,15 @@ export const send: APIGatewayProxyHandler = async (
   const parsedBody: KeyValueMap =
     typeof body === 'string' ? JSON.parse(body) : body;
 
-  let config: ConfigSet;
+  let config: ParsedConfig;
   try {
-    config = getConfig(domain, parsedBody);
+    config = await prepareConfig(domain, parsedBody);
     validateRequest(config);
     return sendmail(config);
-  } catch (err) {
-    Logger.error(err);
-    return httpResponse(err.statusCode, err.message, {
+  } catch (error) {
+    Logger.error(error);
+    return httpResponse(error.statusCode, error.message, {
+      error,
       body: parsedBody,
       config,
     });

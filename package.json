@@ -1,24 +1,21 @@
 {
-  "name": "api-mail",
-  "version": "3.0.0",
+  "name": "lambda-mail-api",
+  "version": "4.0.0",
   "description": "Serverless aws lambda endpoint to deliver mails from contact forms",
   "main": "handler.js",
   "private": false,
-  "author": "jroehl <mail@johannroehl.de>",
+  "author": "jroehl <mail@hinterland.software>",
   "license": "MIT",
   "scripts": {
     "lint": "prettier --write **/*",
     "test": "npm run lint && npm run jest",
-    "start:offline": "npm run parse:environment && serverless offline --httpPort 6060 start",
-    "start:offline:prod": "npm run parse:environment && serverless offline --httpPort 6060 -s production start",
+    "start:offline": "serverless offline --httpPort 6060 start",
     "upsert:template": "ts-node bin/upsert-template.ts",
-    "parse:environment": "CREATE_CONFIG_FILE=1 ts-node bin/parse-environment.ts",
+    "upsert:ssm": "ts-node bin/upsert-ssm.ts",
     "jest": "jest",
     "jest:watch": "jest --watch",
-    "deploy": "npm run parse:environment && serverless deploy -s dev --conceal",
-    "deploy:prod": "npm run parse:environment && serverless deploy -s production --conceal",
-    "logs": "serverless logs -s dev -f sendmail",
-    "logs:prod": "serverless logs -s production -f sendmail"
+    "deploy": "serverless deploy --conceal",
+    "logs": "serverless logs -f sendmail"
   },
   "devDependencies": {
     "@types/aws-lambda": "^8.10.51",

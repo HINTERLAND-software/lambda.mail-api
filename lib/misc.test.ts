@@ -1,199 +1,101 @@
-import { ParsedDomainConfigs } from '../bin/parse-environment';
-import { translations } from '../config';
 import * as misc from './misc';
+import { mockParameters } from './__mocks__/aws-sdk';
 
-const config = <ParsedDomainConfigs>{
-  'johannroehl.de': {
-    index: 1,
-    config: {
-      domain: 'johannroehl.de',
-      receiver: 'no-reply',
-      sesUser: 'mail',
-    },
-    validations: {
-      overrideFor: ['@foobar.com'],
-      validationBlacklist: ['honeypot'],
-      validationWhitelist: ['receiver', 'honeypot'],
-      validationRequired: ['required_0'],
-    },
-  },
-  'foobar.com': {
-    index: 2,
-    config: {
-      domain: 'foobar.com',
-      receiver: 'no-reply',
-      sesUser: 'service',
-    },
-    validations: {
-      overrideFor: ['@johannroehl.de'],
-      validationBlacklist: ['blacklist_1'],
-      validationWhitelist: ['whitelist_1'],
-      validationRequired: ['required_1'],
-    },
-  },
-};
+describe('misc.ts', () => {
+  describe('prepareConfig', () => {
+    it('should return the config', async () => {
+      const keys = {
+        mail: 'mail@foobaz.com',
+      };
+      const domain = 'hinterland.software';
+      const result = await misc.prepareConfig(domain, keys);
+      expect(result).toEqual({
+        keys,
+        translations: mockParameters.en,
+        validations: mockParameters[domain].validations,
+        config: mockParameters[domain].config,
+        recipient: 'mail@hinterland.software',
+        recipientForced: undefined,
+      });
+    });
 
-describe('getConfig', () => {
-  beforeEach(() => {
-    process.env.LOCALE = 'en';
-    jest.spyOn(misc, 'parseConfig').mockReturnValue(config);
-  });
+    it('should return config with fallback', async () => {
+      const keys = {};
+      const domain = 'foobar.com';
+      const result = await misc.prepareConfig(domain, keys);
+      expect(result).toEqual({
+        keys: {
+          mail: mockParameters[domain].fallback,
+        },
+        translations: mockParameters.en,
+        validations: mockParameters[domain].validations,
+        config: mockParameters[domain].config,
+        recipient: 'no-reply@foobar.com',
+        recipientForced: mockParameters[domain].fallback,
+      });
+    });
 
-  test('returns config', () => {
-    const keys = { mail: 'foo@bar.com' };
-    const cfg = misc.getConfig('johannroehl.de', keys);
+    it('should return config with forced recipient', async () => {
+      const keys = {
+        mail: 'mail@hinterland.software',
+      };
+      const domain = 'foobar.com';
+      const result = await misc.prepareConfig(domain, keys);
+      expect(result).toEqual({
+        keys,
+        translations: mockParameters.en,
+        validations: mockParameters[domain].validations,
+        config: mockParameters[domain].config,
+        recipient: 'no-reply@foobar.com',
+        recipientForced: mockParameters[domain].fallback,
+      });
+    });
 
-    expect(cfg).toEqual({
-      keys: keys,
-      translations: translations.en,
-      environment: 'test',
-      recipient: 'no-reply@johannroehl.de',
-      config: config['johannroehl.de'],
+    it('throws error for invalid domain', () => {
+      const keys = { mail: 'mail@hinterland.software' };
+      const domain = 'foobaz';
+      expect(misc.prepareConfig(domain, keys)).rejects.toEqual(
+        new Error('ParameterNotFound')
+      );
     });
   });
 
-  test('returns config with fallback value', () => {
-    const cfg = misc.getConfig('johannroehl.de', {});
-
-    expect(cfg).toEqual({
-      keys: {
-        mail: 'no-reply@johannroehl.de',
-      },
-      translations: translations.en,
-      environment: 'test',
-      recipient: 'no-reply@johannroehl.de',
-      config: config['johannroehl.de'],
-    });
-  });
-
-  test('returns config with forced recipient', () => {
-    const keys = { mail: 'forced@johannroehl.de' };
-    const cfg = misc.getConfig('foobar.com', keys);
-
-    expect(cfg).toEqual({
-      keys: keys,
-      translations: translations.en,
-      environment: 'test',
-      recipient: 'no-reply@foobar.com',
-      recipientForced: 'no-reply@johannroehl.de',
-      config: config['foobar.com'],
-    });
-  });
-
-  test('returns config with locale set to de', () => {
-    process.env.LOCALE = 'de';
-    const keys = { mail: 'forced@johannroehl.de' };
-    const cfg = misc.getConfig('foobar.com', keys);
-
-    expect(cfg).toEqual({
-      keys: keys,
-      translations: translations.de,
-      environment: 'test',
-      recipient: 'no-reply@foobar.com',
-      recipientForced: 'no-reply@johannroehl.de',
-      config: config['foobar.com'],
-    });
-  });
-
-  test('throws error for invalid domain', () => {
-    const keys = { mail: 'foo@bar.xyz' };
-    expect(() => misc.getConfig('bar.xyz', keys)).toThrowError(
-      'Domain "bar.xyz" not set up'
-    );
-  });
-});
-
-describe('validateRequest', () => {
-  test('pass if config is valid', () => {
-    const config = {
-      keys: { mail: 'foo@bar.xyz', name: 'foo' },
-      config: {
+  describe('validateRequest', () => {
+    test('pass if config is valid', () => {
+      const config = {
+        keys: { mail: 'foo@bar.xyz', name: 'foo' },
         validations: {
-          validationBlacklist: ['honeypot'],
-          validationRequired: ['mail'],
+          blacklist: ['honeypot'],
+          required: ['mail'],
         },
-      },
-    };
-    expect(() => misc.validateRequest(<any>config)).not.toThrow();
-  });
+      };
+      expect(() => misc.validateRequest(<any>config)).not.toThrow();
+    });
 
-  test('throw if config has invalid fields', () => {
-    const config = {
-      keys: { mail: 'foo@bar.xyz', name: 'foo', honeypot: 'pooh' },
-      config: {
+    test('throw if config has invalid fields', () => {
+      const config = {
+        keys: { mail: 'foo@bar.xyz', name: 'foo', honeypot: 'pooh' },
         validations: {
-          validationBlacklist: ['honeypot'],
-          validationRequired: ['mail'],
+          blacklist: ['honeypot'],
+          required: ['mail'],
         },
-      },
-    };
-    expect(() => misc.validateRequest(<any>config)).toThrowError(
-      'Invalid field "honeypot" used'
-    );
-  });
+      };
+      expect(() => misc.validateRequest(<any>config)).toThrowError(
+        'Invalid field "honeypot" used'
+      );
+    });
 
-  test('throw if config has missing required fields', () => {
-    const config = {
-      keys: { name: 'foo' },
-      config: {
+    test('throw if config has missing required fields', () => {
+      const config = {
+        keys: { name: 'foo' },
         validations: {
-          validationBlacklist: ['honeypot'],
-          validationRequired: ['mail'],
+          blacklist: ['honeypot'],
+          required: ['mail'],
         },
-      },
-    };
-    expect(() => misc.validateRequest(<any>config)).toThrowError(
-      'No "mail" field specified'
-    );
-  });
-});
-
-describe('parsePartialsAndBooleans', () => {
-  test('parse, sort and sanitize partials and booleans', () => {
-    const res = misc.parsePartialsAndBooleans(
-      {
-        mail: 'mail@johannroehl.de',
-        empty: '',
-        undef: undefined,
-        name: 'Johann',
-        xss: '<div><script>alert("evil");</script></div>',
-        ignored: 'ignored',
-        stringTrue: 'true',
-        stringFalse: 'false',
-        boolTrue: true,
-        boolFalse: false,
-      },
-      translations.en,
-      ['ignored']
-    );
-
-    expect(res).toEqual({
-      partials: [
-        { key: 'Name', value: 'Johann' },
-        { key: 'Sender', value: 'mail@johannroehl.de' },
-        {
-          key: 'xss',
-          value: '<div>&lt;script&gt;alert("evil");&lt;/script&gt;</div>',
-        },
-      ],
-      booleans: [
-        {
-          key: 'boolFalse',
-          value: '<span>&#10060;</span>',
-        },
-        {
-          key: 'boolTrue',
-          value: '<span>&#9989;</span>',
-        },
-        {
-          key: 'stringFalse',
-          value: '<span>&#10060;</span>',
-        },
-        {
-          key: 'stringTrue',
-          value: '<span>&#9989;</span>',
-        },
-      ],
+      };
+      expect(() => misc.validateRequest(<any>config)).toThrowError(
+        'No "mail" field specified'
+      );
     });
   });
 });

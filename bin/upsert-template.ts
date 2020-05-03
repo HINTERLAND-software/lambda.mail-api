@@ -7,11 +7,12 @@ import { Logger } from '../lib/utils';
 config();
 
 const {
-  AWS_SES_REGION = 'eu-west-1',
+  AWS_SES_REGION,
+  AWS_REGION,
   TEMPLATE_NAME = 'default-template',
 } = process.env;
 
-const ses = new SES({ region: AWS_SES_REGION });
+const ses = new SES({ region: AWS_SES_REGION || AWS_REGION });
 
 const getTemplate = (fileEnding) =>
   readFileSync(

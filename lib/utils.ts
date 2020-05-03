@@ -1,15 +1,18 @@
 import { APIGatewayProxyResult } from 'aws-lambda';
+import { filterXSS } from 'xss';
 
-/**
- * Handle the http response
- *
- * @param {number} statusCode
- * @param {string} message
- * @param {any} [input='']
- * @returns {APIGatewayProxyResult}
- */
+const pick = (input) => {
+  if (getEnvironment() === 'production') {
+    return {
+      domain: input?.config?.config?.domain,
+      presendTimestamp: input?.presendTimestamp,
+    };
+  }
+  return input;
+};
+
 export const httpResponse = (
-  statusCode: number,
+  statusCode: number = 400,
   message: string,
   input: any = ''
 ): APIGatewayProxyResult => {
@@ -22,7 +25,7 @@ export const httpResponse = (
     },
     body: JSON.stringify({
       message,
-      input,
+      input: pick(input),
     }),
   };
 };
@@ -41,3 +44,12 @@ export class Logger {
     console.error(message, ...optionalParams);
   }
 }
+
+export const sanitizeString = (source: string): string => {
+  return filterXSS(source);
+};
+
+export const getEnvironment = () => {
+  const { STAGE, NODE_ENV = 'development' } = process.env;
+  return STAGE || NODE_ENV;
+};

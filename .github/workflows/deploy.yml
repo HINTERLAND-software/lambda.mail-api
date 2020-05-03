@@ -4,7 +4,6 @@ on:
     branches:
       - master
       - production
-      - feat/migrate-config-to-ssm
 
 jobs:
   test:

@@ -1,0 +1,105 @@
+{
+  // defaults are merged with the domain configurations
+  "defaults": {
+    // the locale that is used for the key translations
+    "locale": "en",
+    // is used if no mail is given or the recipient forced ("overrideFor")
+    "fallback": "no-reply+fallback@example.com",
+    // force use the "fallback" address for recipients that match the override
+    "overrideFor": ["@foo.bar"],
+    "validations": {
+      // the request fails if blacklisted keys are present
+      "blacklist": ["honeypot"],
+      // keys that won't be transferred by mail
+      "whitelist": ["receiver", "domain"],
+      // the request fails if the required keys are missing
+      "required": [
+        "mail",
+        "name",
+        "message",
+        "dataprivacy-disclaimer",
+        "processing-disclaimer"
+      ]
+    }
+  },
+  // domain configuration sets
+  "configs": [
+    {
+      "config": {
+        // the domain of the receiver
+        "domain": "hinterland.software",
+        // the user that is registered as a SES sender
+        "sesUser": "no-reply",
+        // the receiver of the mail
+        "receiver": "no-reply+receiver"
+      },
+      // override specific keys from "defaults"
+      "validations": {
+        "blacklist": ["another-honeypot"]
+      }
+    },
+    {
+      "config": {
+        "domain": "bar.com",
+        "sesUser": "no-reply",
+        "receiver": "service"
+      },
+      // override specific keys from "defaults"
+      "overrideFor": ["foo@bar.com"],
+      "locale": "de"
+    }
+  ],
+  // dictionaries that are used to translate keys to the specified "locale"
+  "dictionary": {
+    "de": {
+      "dataprivacy-disclaimer": "Zustimmung Datenschutz erteilt",
+      "processing-disclaimer": "Zustimmung Datenverarbeitung erteilt",
+      "by": "von",
+      "bymail": "Kontakt per Mail",
+      "byphone": "Kontakt per Telefon",
+      "copyright": "<a href=\"https://hinterland.software\">© 2013 - 2020 HINTERLAND software</a>",
+      "false": "Nein",
+      "form": "Kontaktformular",
+      "from": "von",
+      "header": "Neuer Kontaktformular Eintrag",
+      "language": "Sprache",
+      "locale": "Sprache",
+      "mail": "Absender",
+      "message": "Nachricht",
+      "name": "Name",
+      "phone": "Telefonnummer",
+      "receiver": "Empfänger",
+      "recom": "Empfehlung",
+      "reply": "(Oder einfach die \"Antworten\" Funktion des Email Programms nutzen)",
+      "replybutton": "Antworten",
+      "subject": "Betreff",
+      "surname": "Nachname",
+      "true": "Ja"
+    },
+    "en": {
+      "dataprivacy-disclaimer": "Accepted data privacy disclaimer",
+      "processing-disclaimer": "Accepted data processing disclaimer",
+      "by": "by",
+      "bymail": "Contact by mail",
+      "byphone": "Contact by phone",
+      "copyright": "<a href=\"https://hinterland.software\">© 2013 - 2020 HINTERLAND software</a>",
+      "false": "No",
+      "form": "Contact form",
+      "from": "from",
+      "header": "New contact form entry",
+      "language": "Language",
+      "locale": "Language",
+      "mail": "Sender",
+      "message": "Message",
+      "name": "Name",
+      "phone": "Phonenumber",
+      "receiver": "Receiver",
+      "recom": "Recommendation",
+      "reply": "(Or just hit \"reply\" in your email client)",
+      "replybutton": "Reply",
+      "subject": "Subject",
+      "surname": "Surname",
+      "true": "Yes"
+    }
+  }
+}

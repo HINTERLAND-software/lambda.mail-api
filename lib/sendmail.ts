@@ -1,28 +1,30 @@
 import { SES } from 'aws-sdk';
-import { ConfigSet, parsePartialsAndBooleans } from './misc';
 import { httpResponse, Logger } from './utils';
+import { ParsedConfig } from '../types';
+import { parsePartialsAndBooleans } from './parse';
 
-/**
- * sendmail handler
- * @param {object} config
- * @param {string} recipient
- */
-export default async (configSet: ConfigSet) => {
+const sendMail = (
+  params: SES.SendTemplatedEmailRequest
+): Promise<SES.SendTemplatedEmailResponse> => {
+  return new SES({ region: process.env.AWS_SES_REGION })
+    .sendTemplatedEmail(params)
+    .promise();
+};
+
+export default async (parsedConfig: ParsedConfig) => {
   const {
     translations,
     recipient,
     recipientForced,
     keys,
-    config: {
-      config: { domain, sesUser },
-      validations,
-    },
-  } = configSet;
+    validations,
+    config: { domain, sesUser },
+  } = parsedConfig;
 
   const partialsAndBooleans = parsePartialsAndBooleans(
     keys,
     translations,
-    validations.validationWhitelist
+    validations.whitelist
   );
 
   const templateData = {
@@ -34,7 +36,7 @@ export default async (configSet: ConfigSet) => {
 
   const params: SES.SendTemplatedEmailRequest = {
     Destination: { ToAddresses: [recipientForced || recipient] },
-    ReplyToAddresses: [<string>keys.mail],
+    ReplyToAddresses: [keys.mail as string],
     Source: `${translations.form} <${sesUser}@${domain}>`,
     Template: process.env.TEMPLATE_NAME,
     TemplateData: JSON.stringify(templateData),
@@ -48,13 +50,11 @@ export default async (configSet: ConfigSet) => {
       ...params,
       TemplateData: templateData,
     },
-    config: configSet,
+    config: parsedConfig,
   };
 
   try {
-    const res = await new SES({ region: process.env.AWS_SES_REGION })
-      .sendTemplatedEmail(params)
-      .promise();
+    const res = await sendMail(params);
     return httpResponse(
       200,
       `Mail sent to ${params.Destination.ToAddresses[0]} (MessageId: "${res.MessageId}")`,
@@ -62,7 +62,7 @@ export default async (configSet: ConfigSet) => {
     );
   } catch (error) {
     Logger.error(error);
-    return httpResponse(error.statusCode || 400, error.message, {
+    return httpResponse(error.statusCode, error.message, {
       error,
       ...result,
     });

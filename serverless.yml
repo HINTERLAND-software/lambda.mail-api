@@ -1,6 +1,6 @@
 # Happy Coding!
 
-service: api-mail
+service: ${file(./package.json):name}
 
 plugins:
   - serverless-webpack
@@ -11,10 +11,10 @@ plugins:
 provider:
   name: aws
   runtime: nodejs12.x
-  region: eu-central-1
-  stage: dev # you can override this via the CLI argument
+  region: ${env:AWS_REGION}
+  stage: ${opt:stage, env:ENV} # you can override this via the CLI argument
   apiKeys:
-    - ${self:service}-key-${self:custom.stage}
+    - ${self:service}-key-${self:provider.stage}
   apiGateway:
     minimumCompressionSize: 1024 # Enable gzip compression for responses > 1 KB
   usagePlan:
@@ -25,32 +25,34 @@ provider:
       burstLimit: 10
       rateLimit: 5
   environment: # Service wide environment variables
-    STAGE: ${self:custom.stage}
+    STAGE: ${self:provider.stage}
     TEMPLATE_NAME: ${file(./templates/${env:TEMPLATE_NAME, "default-template"}.json):TemplateName}
-    AWS_SES_REGION: ${env:AWS_SES_REGION, "eu-west-1"}
+    AWS_SES_REGION: ${env:AWS_SES_REGION, self:provider.region}
     AWS_NODEJS_CONNECTION_REUSE_ENABLED: 1
-    STRINGIFIED_CONFIG: ${file(./.env.json):string}
-    LOCALE: ${env:LOCALE, "en"}
+    AWS_SSM_PREFIX: /${self:service}/${self:provider.stage}
   iamRoleStatements:
     - Effect: 'Allow'
       Action:
         - 'ses:SendEmail'
         - 'ses:SendTemplatedEmail'
-      Resource: '*'
+      Resource: 'arn:aws:ses:${self:provider.environment.AWS_SES_REGION}:${env:AWS_ACCOUNT_ID}:*'
+    - Effect: 'Allow'
+      Action:
+        - 'ssm:GetParameter'
+      Resource: 'arn:aws:ssm:${self:provider.region}:${env:AWS_ACCOUNT_ID}:parameter${self:provider.environment.AWS_SSM_PREFIX}/*'
+    - Effect: 'Allow'
+      Action:
+        - 'kms:Decrypt'
+      Resource: 'arn:aws:kms:${self:provider.region}:${env:AWS_ACCOUNT_ID}:key/CMK'
 
 custom:
   webpack:
     webpackConfig: ./webpack.config.js
     includeModules: true
   # https://github.com/amplify-education/serverless-domain-manager
-  stage: ${opt:stage, self:provider.stage}
-  domains:
-    production: ${env:PRODUCTION_DOMAIN}
-    dev: ${env:DEV_DOMAIN}
   customDomain:
-    basePath: mail
-    domainName: ${self:custom.domains.${self:custom.stage}}
-    stage: ${self:custom.stage}
+    basePath: lambda-mail
+    domainName: ${env:CUSTOM_DOMAIN}
     createRoute53Record: false
   # https://github.com/ACloudGuru/serverless-plugin-aws-alerts
   alerts:
@@ -63,10 +65,10 @@ custom:
       functionErrors:
         treatMissingData: notBreaching
       functionInvocations:
-        threshold: 50 # override threshold
+        threshold: 50
         treatMissingData: notBreaching
       functionDuration:
-        threshold: 4000 # override threshold
+        threshold: 4000
         treatMissingData: notBreaching
       statusCodeErrors:
         metric: statusCodeErrors

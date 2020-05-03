@@ -1,120 +1,104 @@
-import { config as dotEnv } from 'dotenv';
-import { filterXSS } from 'xss';
-import { existsSync, readFileSync } from 'fs';
-import { resolve } from 'path';
-import parseEnvironment, {
-  DomainConfig,
-  ParsedDomainConfigs,
-} from '../bin/parse-environment';
-import { translations } from '../config';
-import { KeyValueMap } from '../handler';
+import { KeyValueMap, Config, Translations, ParsedConfig } from '../types';
+import { SSM } from 'aws-sdk';
+import { getEnvironment } from './utils';
 
-/**
- * Sanitize string
- *
- * @param {string} source
- * @returns {string}
- */
-export const sanitizeString = (source: string): string => {
-  return filterXSS(source);
+export const fetchSSM = async (path: string): Promise<string | undefined> => {
+  const { AWS_REGION: region, AWS_SSM_PREFIX: prefix } = process.env;
+  const ssm = new SSM({ region });
+  const result = await ssm
+    .getParameter({ Name: `${prefix}${path}`, WithDecryption: true })
+    .promise();
+  return result.Parameter.Value;
 };
 
-/**
- * Load config from file or environment
- *
- * @returns {ParsedDomainConfigs}
- */
-export const parseConfig = (): ParsedDomainConfigs => {
-  const envFile = resolve(__dirname, '..', '.env.json');
-  let parsedConfig: ParsedDomainConfigs;
-  const { STRINGIFIED_CONFIG } = process.env;
-  if (STRINGIFIED_CONFIG) {
-    parsedConfig = JSON.parse(
-      STRINGIFIED_CONFIG.slice(1, STRINGIFIED_CONFIG.length - 1)
-    );
-  } else if (existsSync(envFile)) {
-    parsedConfig = JSON.parse(readFileSync(envFile, 'utf-8'));
-  } else {
-    dotEnv();
-    parsedConfig = parseEnvironment(process.env);
-  }
-  if (!parsedConfig || !Object.keys(parsedConfig).length) {
-    throw new Error('No domain configurations found');
-  }
-  return parsedConfig;
+export const fetchConfig = (domain: string): Promise<string> => {
+  return fetchSSM(`/config/${domain}`);
 };
 
-/**
- * Get the fallback (lowest index) of the configuration
- *
- * @param {ParsedDomainConfigs} config
- * @returns {DomainConfig}
- */
-const getFallback = (config: ParsedDomainConfigs): DomainConfig => {
-  const { value } = Object.values(config).reduce(
-    (red, value) => {
-      if (value.index > red.lowestIndex) return red;
-      return { value, lowestIndex: value.index };
-    },
-    { value: null, lowestIndex: Object.keys(config).length }
+export const parseConfig = (config: string): Config => {
+  let parsed: Config;
+  try {
+    parsed = JSON.parse(config) as Config;
+  } catch (error) {
+    throw new Error('Misshaped domain config');
+  }
+  return parsed;
+};
+
+export const getConfig = async (domain: string): Promise<Config> => {
+  const configString = await fetchConfig(domain);
+  const config = parseConfig(configString);
+
+  if (!config.config.domain) {
+    throw new Error(`No configuration found for domain "${domain}"`);
+  }
+  return config;
+};
+
+export const fetchTranslations = (locale: string): Promise<string> => {
+  return fetchSSM(`/translations/${locale}`);
+};
+
+export const parseTranslations = (translations: string): Translations => {
+  let parsed: Translations;
+  try {
+    parsed = JSON.parse(translations) as Translations;
+  } catch (error) {
+    throw new Error('Misshaped translation set');
+  }
+  return parsed;
+};
+
+export const getTranslations = async (
+  locale: string
+): Promise<Translations> => {
+  const translationsString = await fetchTranslations(locale);
+  const translations = parseTranslations(translationsString);
+
+  if (!translations || Object.keys(translations).length <= 0) {
+    throw new Error(`No translations found for locale "${locale}"`);
+  }
+  return translations;
+};
+
+export const getOverrides = (
+  overrideFor: Array<string>,
+  mail: string,
+  fallback: string
+) => {
+  const overrideRecipient = overrideFor.some((override) =>
+    (mail as string).includes(override)
   );
-  if (!value) throw new Error('No fallback config found');
-  return value;
-};
-
-export declare type ConfigSet = {
-  keys: KeyValueMap;
-  translations: KeyValueMap;
-  environment: string;
-  recipient: string;
-  recipientForced: string | undefined;
-  config: DomainConfig;
-};
-
-/**
- * Get configuration set according to domain
- *
- * @param {string} domain
- * @param {KeyValueMap} keys
- * @returns {ConfigSet}
- */
-export const getConfig = (domain: string, keys: KeyValueMap): ConfigSet => {
-  const envConfig = parseConfig();
-  const fallback = getFallback(envConfig);
-  const self = `${fallback.config.receiver}@${fallback.config.domain}`;
-
-  const senderConfig = envConfig[domain];
-  if (!senderConfig) throw new Error(`Domain "${domain}" not set up`);
-
-  const { mail = self } = keys;
-  const locales =
-    translations[
-      process.env.LOCALE ? process.env.LOCALE.toLowerCase() : 'en'
-    ] || translations.en;
-
-  const environment =
-    process.env.JEST_WORKER_ID !== undefined ? 'test' : process.env.STAGE;
-
-  const {
-    validations: { overrideFor = [] },
-    config: { receiver },
-  } = senderConfig;
-
-  const recipient = `${receiver}@${domain}`;
-
-  const overrideRecipient = overrideFor.some((o) => (<string>mail).includes(o));
-  let recipientForced;
-  if (overrideRecipient || !environment.match(/(production|test)/i)) {
-    recipientForced = self;
+  if (overrideRecipient || !getEnvironment().match(/(production|test)/i)) {
+    return fallback;
   }
+};
+
+export const prepareConfig = async (
+  domain: string,
+  keys: KeyValueMap
+): Promise<ParsedConfig> => {
+  const {
+    config,
+    locale,
+    fallback,
+    overrideFor,
+    validations,
+  } = await getConfig(domain);
+  const translations = await getTranslations(locale);
+
+  const { mail = fallback } = keys;
+
+  const recipient = `${config.receiver}@${config.domain}`;
+  const recipientForced = getOverrides(overrideFor, `${mail}`, fallback);
 
   return {
     keys: { ...keys, mail },
-    translations: locales,
-    environment,
+    translations,
+    validations,
     recipient,
     recipientForced,
-    config: senderConfig,
+    config,
   };
 };
 
@@ -122,17 +106,15 @@ class ResponseError extends Error {
   code: number;
 }
 
-export const validateRequest = (config: ConfigSet): void => {
+export const validateRequest = (config: ParsedConfig): void => {
   const {
     keys,
-    config: {
-      validations: { validationBlacklist, validationRequired },
-    },
+    validations: { blacklist, required },
   } = config;
   const error = new ResponseError();
 
   // honeypot triggered
-  const invalidField = validationBlacklist.filter((field) => keys[field]);
+  const invalidField = blacklist.filter((field) => keys[field]);
   if (invalidField.length) {
     error.message = `Invalid field "${invalidField.join('", "')}" used`;
     error.code = 200;
@@ -140,80 +122,10 @@ export const validateRequest = (config: ConfigSet): void => {
   }
 
   // missing required fields
-  const missingFields = validationRequired.filter((field) => !keys[field]);
+  const missingFields = required.filter((field) => !keys[field]);
   if (missingFields.length) {
     error.message = `No "${missingFields.join('", "')}" field specified`;
     error.code = 400;
     throw error;
   }
-};
-
-export declare type KeyValuePairs = {
-  key: string;
-  value: string | number | boolean;
-};
-
-declare type PartialsAndBooleans = {
-  partials: KeyValuePairs[];
-  booleans: KeyValuePairs[];
-};
-
-const byKey = (a: KeyValuePairs, b: KeyValuePairs): number =>
-  a.key.localeCompare(b.key);
-
-const sanitize = ({ key, value }: KeyValuePairs): KeyValuePairs => ({
-  key: sanitizeString(key),
-  value: sanitizeString(`${value}`),
-});
-
-export const parsePartialsAndBooleans = (
-  keys: KeyValueMap,
-  translations: KeyValueMap,
-  ignoredKeys: string[]
-): PartialsAndBooleans => {
-  const { partials, booleans } = Object.entries(keys).reduce(
-    (partialsAndBooleans, [k, v]) => {
-      if (
-        v === undefined ||
-        v === '' ||
-        v === null ||
-        ignoredKeys.some((field) => field === k)
-      ) {
-        return partialsAndBooleans;
-      }
-
-      if (v === true || v === 'true' || v === false || v === 'false') {
-        const bool = v === 'true' ? true : v === 'false' ? false : v;
-        return {
-          ...partialsAndBooleans,
-          booleans: [
-            ...partialsAndBooleans.booleans,
-            {
-              key: translations[k] || k,
-              value: bool
-                ? '<span style="color: green;">&#9989;</span>'
-                : '<span style="color: red;">&#10060;</span>',
-            },
-          ],
-        };
-      }
-
-      return {
-        ...partialsAndBooleans,
-        partials: [
-          ...partialsAndBooleans.partials,
-          {
-            key: translations[k] || k,
-            value: translations[v] || v,
-          },
-        ],
-      };
-    },
-    { partials: [], booleans: [] }
-  );
-
-  return {
-    partials: partials.sort(byKey).map(sanitize),
-    booleans: booleans.sort(byKey).map(sanitize),
-  };
 };

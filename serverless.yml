@@ -94,7 +94,7 @@ functions:
           private: true
           cors: true
           path: send/{domain}
-          method: post
+          method: POST
           request:
             parameters:
               paths:

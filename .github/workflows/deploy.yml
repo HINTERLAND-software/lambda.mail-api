@@ -54,6 +54,5 @@ jobs:
           role-to-assume: arn:aws:iam::${{ env.AWS_ACCOUNT_ID }}:role/${{ secrets.AWS_SERVERLESS_ROLE }}
           role-duration-seconds: 900
 
-      - name: Deploy to production
-        if: "endsWith(github.ref, '/production')"
+      - name: Deploy
         run: npm run deploy

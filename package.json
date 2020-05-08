@@ -20,27 +20,27 @@
   "devDependencies": {
     "@types/aws-lambda": "^8.10.51",
     "@types/jest": "^25.2.1",
-    "@types/node": "^13.13.4",
-    "jest": "^25.5.3",
-    "jest-cli": "^25.5.3",
+    "@types/node": "^13.13.5",
+    "jest": "^25.5.4",
+    "jest-cli": "^26.0.1",
     "prettier": "^2.0.5",
-    "serverless": "^1.69.0",
-    "serverless-domain-manager": "^3.3.2",
-    "serverless-offline": "^6.1.4",
+    "serverless": "^1.70.0",
+    "serverless-domain-manager": "^4.0.0",
+    "serverless-offline": "^6.1.5",
     "serverless-plugin-aws-alerts": "^1.4.0",
-    "serverless-webpack": "^5.3.1",
-    "ts-jest": "^25.4.0",
-    "ts-loader": "^7.0.2",
+    "serverless-webpack": "^5.3.2",
+    "ts-jest": "^25.5.0",
+    "ts-loader": "^7.0.3",
     "typescript": "^3.8.3",
     "webpack": "^4.43.0",
     "webpack-node-externals": "^1.7.2"
   },
   "dependencies": {
-    "aws-sdk": "^2.667.0",
+    "aws-sdk": "^2.672.0",
     "change-case": "^4.1.1",
     "dotenv": "^8.2.0",
     "source-map-support": "^0.5.19",
-    "ts-node": "^8.9.1",
+    "ts-node": "^8.10.1",
     "xss": "^1.0.6"
   }
 }

@@ -28,7 +28,7 @@
     "serverless-domain-manager": "^4.2.0",
     "serverless-offline": "^6.5.0",
     "serverless-plugin-aws-alerts": "^1.6.1",
-    "serverless-webpack": "^5.3.2",
+    "serverless-webpack": "^5.3.3",
     "ts-jest": "^25.5.1",
     "ts-loader": "^8.0.1",
     "typescript": "^3.9.7",

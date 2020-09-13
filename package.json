@@ -24,7 +24,7 @@
     "jest": "^25.5.4",
     "jest-cli": "^26.4.2",
     "prettier": "^2.1.1",
-    "serverless": "^1.82.0",
+    "serverless": "^1.83.0",
     "serverless-domain-manager": "^4.2.0",
     "serverless-offline": "^6.7.0",
     "serverless-plugin-aws-alerts": "^1.6.1",

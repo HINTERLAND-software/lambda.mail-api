@@ -12,6 +12,7 @@ provider:
   name: aws
   runtime: nodejs12.x
   region: ${env:AWS_REGION}
+  logRetentionInDays: 30
   stage: ${opt:stage, env:ENV} # you can override this via the CLI argument
   apiKeys:
     - ${self:service}-key-${self:provider.stage}

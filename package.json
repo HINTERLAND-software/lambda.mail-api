@@ -22,7 +22,7 @@
     "@types/jest": "^26.0.14",
     "@types/node": "^14.11.10",
     "jest": "^25.5.4",
-    "jest-cli": "^26.5.3",
+    "jest-cli": "^26.6.1",
     "prettier": "^2.1.2",
     "serverless": "^1.83.0",
     "serverless-domain-manager": "^5.0.0",

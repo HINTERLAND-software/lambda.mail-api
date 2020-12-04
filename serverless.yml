@@ -47,6 +47,9 @@ provider:
       Resource: 'arn:aws:kms:${self:provider.region}:${env:AWS_ACCOUNT_ID}:key/CMK'
 
 custom:
+  period:
+    development: 300
+    production: 60
   webpack:
     webpackConfig: ./webpack.config.js
     includeModules: true
@@ -63,19 +66,23 @@ custom:
     definitions: # these defaults are merged with your definitions
       functionThrottles:
         treatMissingData: notBreaching
+        period: ${self:custom.period.${self:provider.stage}}
       functionErrors:
         treatMissingData: notBreaching
+        period: ${self:custom.period.${self:provider.stage}}
       functionInvocations:
         threshold: 50
         treatMissingData: notBreaching
+        period: ${self:custom.period.${self:provider.stage}}
       functionDuration:
         threshold: 4000
         treatMissingData: notBreaching
+        period: ${self:custom.period.${self:provider.stage}}
       statusCodeErrors:
         metric: statusCodeErrors
         threshold: 0
         statistic: Sum
-        period: 60
+        period: ${self:custom.period.${self:provider.stage}}
         evaluationPeriods: 1
         comparisonOperator: GreaterThanThreshold
         pattern: '{$.statusCode != 200}'

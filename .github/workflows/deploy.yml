@@ -29,16 +29,16 @@ jobs:
       - name: Set development env
         if: "!endsWith(github.ref, '/production')"
         run: |
-          echo "::set-env name=ENV::development"
-          echo "::set-env name=AWS_ACCOUNT_ID::${{ secrets.AWS_DEVELOPMENT_ACCOUNT }}"
-          echo "::set-env name=CUSTOM_DOMAIN::${{ secrets.DEVELOPMENT_DOMAIN }}"
+          echo "ENV=development" >> ${GITHUB_ENV}
+          echo "AWS_ACCOUNT_ID=${{ secrets.AWS_DEVELOPMENT_ACCOUNT }}" >> ${GITHUB_ENV}
+          echo "CUSTOM_DOMAIN=${{ secrets.DEVELOPMENT_DOMAIN }}" >> ${GITHUB_ENV}
 
       - name: Set production env
         if: "endsWith(github.ref, '/production')"
         run: |
-          echo "::set-env name=ENV::production"
-          echo "::set-env name=AWS_ACCOUNT_ID::${{ secrets.AWS_PRODUCTION_ACCOUNT }}"
-          echo "::set-env name=CUSTOM_DOMAIN::${{ secrets.PRODUCTION_DOMAIN }}"
+          echo "ENV=production" >> ${GITHUB_ENV}
+          echo "AWS_ACCOUNT_ID=${{ secrets.AWS_PRODUCTION_ACCOUNT }}" >> ${GITHUB_ENV}
+          echo "CUSTOM_DOMAIN=${{ secrets.PRODUCTION_DOMAIN }}" >> ${GITHUB_ENV}
 
       - name: Echo mode
         run: |

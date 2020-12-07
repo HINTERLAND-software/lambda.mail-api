@@ -37,7 +37,7 @@
   },
   "dependencies": {
     "aws-sdk": "^2.799.0",
-    "change-case": "^4.1.1",
+    "change-case": "^4.1.2",
     "dotenv": "^8.2.0",
     "source-map-support": "^0.5.19",
     "ts-node": "^9.0.0",

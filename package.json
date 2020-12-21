@@ -36,7 +36,7 @@
     "webpack-node-externals": "^2.5.2"
   },
   "dependencies": {
-    "aws-sdk": "^2.809.0",
+    "aws-sdk": "^2.814.0",
     "change-case": "^4.1.2",
     "dotenv": "^8.2.0",
     "source-map-support": "^0.5.19",

@@ -98,7 +98,7 @@ custom:
       - name: functionInvocations
         enabled: true
       - name: functionDuration
-        enabled: true
+        enabled: ${self:custom.enabled.${self:provider.stage}}
       - name: statusCodeErrors
         enabled: true
 

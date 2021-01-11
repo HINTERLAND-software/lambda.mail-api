@@ -2,8 +2,8 @@ import { SSM } from 'aws-sdk';
 import { config } from 'dotenv';
 import { readFileSync } from 'fs';
 import { resolve } from 'path';
-import { Logger } from '../lib/utils';
-import { Config, Defaults, Settings, Translations } from '../types';
+import { Logger } from '../src/libs/utils';
+import { Config, Defaults, Settings, Translations } from '../src/libs/types';
 
 config();
 

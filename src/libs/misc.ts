@@ -1,4 +1,4 @@
-import { KeyValueMap, Config, Translations, ParsedConfig } from '../types';
+import { KeyValueMap, Config, Translations, ParsedConfig } from './types';
 import { SSM } from 'aws-sdk';
 import { getEnvironment } from './utils';
 

@@ -1,7 +1,8 @@
 import { SES } from 'aws-sdk';
-import { httpResponse, Logger } from './utils';
-import { ParsedConfig } from '../types';
+import { Logger } from './utils';
+import { ParsedConfig } from './types';
 import { parsePartialsAndBooleans } from './parse';
+import { httpResponse } from './apiGateway';
 
 const sendMail = (
   params: SES.SendTemplatedEmailRequest

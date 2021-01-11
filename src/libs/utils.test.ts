@@ -1,4 +1,5 @@
-import { getEnvironment, httpResponse, Logger } from './utils';
+import { httpResponse } from './apiGateway';
+import { getEnvironment, Logger } from './utils';
 
 describe('utils.ts', () => {
   describe('httpResponse', () => {

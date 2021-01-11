@@ -2,7 +2,7 @@ import { SES } from 'aws-sdk';
 import { config } from 'dotenv';
 import { readFileSync } from 'fs';
 import { resolve } from 'path';
-import { Logger } from '../lib/utils';
+import { Logger } from '../src/libs/utils';
 
 config();
 

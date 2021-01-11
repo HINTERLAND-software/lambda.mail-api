@@ -3,7 +3,7 @@ import {
   Translations,
   KeyValuePairs,
   PartialsAndBooleans,
-} from '../types';
+} from './types';
 import { sanitizeString } from './utils';
 
 const byKey = (a: KeyValuePairs, b: KeyValuePairs): number =>

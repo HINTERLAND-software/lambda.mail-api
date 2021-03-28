@@ -42,7 +42,7 @@
   "dependencies": {
     "@middy/core": "^1.5.2",
     "@middy/http-json-body-parser": "^1.5.2",
-    "aws-sdk": "^2.868.0",
+    "aws-sdk": "^2.874.0",
     "change-case": "^4.1.2",
     "dotenv": "^8.2.0",
     "source-map-support": "^0.5.19",

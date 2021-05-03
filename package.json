@@ -28,7 +28,7 @@
     "prettier": "^2.2.1",
     "serverless": "^2.39.0",
     "serverless-domain-manager": "^5.1.0",
-    "serverless-offline": "^6.9.0",
+    "serverless-offline": "^7.0.0",
     "serverless-plugin-aws-alerts": "^1.7.3",
     "serverless-webpack": "^5.4.2",
     "ts-jest": "^26.5.5",

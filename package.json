@@ -17,7 +17,7 @@
     "deploy": "serverless deploy --conceal"
   },
   "devDependencies": {
-    "@serverless/typescript": "^2.38.0",
+    "@serverless/typescript": "^2.40.0",
     "@types/aws-lambda": "^8.10.76",
     "@types/jest": "^26.0.23",
     "@types/node": "^15.0.2",

@@ -18,7 +18,7 @@
   },
   "devDependencies": {
     "@serverless/typescript": "^2.43.1",
-    "@types/aws-lambda": "^8.10.76",
+    "@types/aws-lambda": "^8.10.77",
     "@types/jest": "^26.0.23",
     "@types/node": "^15.6.1",
     "fork-ts-checker-webpack-plugin": "^6.2.10",

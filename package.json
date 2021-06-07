@@ -20,7 +20,7 @@
     "@serverless/typescript": "^2.43.1",
     "@types/aws-lambda": "^8.10.77",
     "@types/jest": "^26.0.23",
-    "@types/node": "^15.6.1",
+    "@types/node": "^15.12.1",
     "fork-ts-checker-webpack-plugin": "^6.2.10",
     "jest": "^26.6.3",
     "jest-cli": "^27.0.4",

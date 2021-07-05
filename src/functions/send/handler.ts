@@ -1,6 +1,6 @@
 import {
   httpResponse,
-  ValidatedEventAPIGatewayProxyEvent,
+  ValidatedEventAPIGatewayProxyEvent
 } from '@libs/apiGateway';
 import { middyfy } from '@libs/lambda';
 import { prepareConfig, validateRequest } from '@libs/misc';
@@ -23,7 +23,9 @@ export const send: ValidatedEventAPIGatewayProxyEvent<typeof schema> = async (
   try {
     config = await prepareConfig(domain, parsedBody);
 
-    const isAuthorized = event.headers.origin.includes(config.config.domain);
+    const isAuthorized =
+      !event.headers.origin ||
+      event.headers.origin.includes(config.config.domain);
     validateRequest(config, isAuthorized);
     const { result, response } = await sendmail(config);
     return httpResponse(

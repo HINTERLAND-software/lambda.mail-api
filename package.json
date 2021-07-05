@@ -40,7 +40,7 @@
     "webpack-node-externals": "^3.0.0"
   },
   "dependencies": {
-    "@middy/core": "^2.4.1",
+    "@middy/core": "^2.4.3",
     "@middy/http-json-body-parser": "^2.4.1",
     "aws-sdk": "^2.935.0",
     "change-case": "^4.1.2",

@@ -1,5 +1,5 @@
-import { KeyValueMap, Config, Translations, ParsedConfig } from './types';
 import { SSM } from 'aws-sdk';
+import { Config, KeyValueMap, ParsedConfig, Translations } from './types';
 import { getEnvironment } from './utils';
 
 export const fetchSSM = async (path: string): Promise<string | undefined> => {
@@ -106,7 +106,10 @@ class ResponseError extends Error {
   code: number;
 }
 
-export const validateRequest = (config: ParsedConfig): void => {
+export const validateRequest = (
+  config: ParsedConfig,
+  isAuthorized: boolean = true
+): void => {
   const {
     keys,
     validations: { blacklist, required },
@@ -126,6 +129,12 @@ export const validateRequest = (config: ParsedConfig): void => {
   if (missingFields.length) {
     error.message = `No "${missingFields.join('", "')}" field specified`;
     error.code = 400;
+    throw error;
+  }
+
+  if (!isAuthorized) {
+    error.message = `Unauthorized`;
+    error.code = 401;
     throw error;
   }
 };

@@ -1,8 +1,8 @@
 import {
   KeyValueMap,
-  Translations,
   KeyValuePairs,
   PartialsAndBooleans,
+  Translations,
 } from './types';
 import { sanitizeString } from './utils';
 

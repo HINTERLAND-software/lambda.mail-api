@@ -72,6 +72,19 @@ describe('misc.ts', () => {
       expect(() => misc.validateRequest(<any>config)).not.toThrow();
     });
 
+    test('throw if unauthorized', () => {
+      const config = {
+        keys: { mail: 'foo@bar.xyz', name: 'foo' },
+        validations: {
+          blacklist: ['honeypot'],
+          required: ['mail'],
+        },
+      };
+      expect(() => misc.validateRequest(<any>config, false)).toThrowError(
+        'Unauthorized'
+      );
+    });
+
     test('throw if config has invalid fields', () => {
       const config = {
         keys: { mail: 'foo@bar.xyz', name: 'foo', honeypot: 'pooh' },

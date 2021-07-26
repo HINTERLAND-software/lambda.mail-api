@@ -27,14 +27,15 @@ const pick = (input) => {
 export const httpResponse = (
   statusCode: number = 400,
   message: string,
-  input: any = ''
+  input: any = '',
+  isAuthorized: boolean = true
 ): APIGatewayProxyResult => {
   Logger.log(JSON.stringify({ statusCode, message, input }, null, 2));
   return {
     statusCode,
     headers: {
       'Access-Control-Allow-Origin': '*',
-      'Access-Control-Allow-Credentials': '*',
+      ...(isAuthorized ? { 'Access-Control-Allow-Credentials': '*' } : {}),
     },
     body: JSON.stringify({
       message,

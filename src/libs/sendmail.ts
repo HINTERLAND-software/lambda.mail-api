@@ -1,8 +1,6 @@
 import { SES } from 'aws-sdk';
-import { Logger } from './utils';
-import { ParsedConfig } from './types';
 import { parsePartialsAndBooleans } from './parse';
-import { httpResponse } from './apiGateway';
+import { KeyValuePairs, ParsedConfig } from './types';
 
 const sendMail = (
   params: SES.SendTemplatedEmailRequest
@@ -12,7 +10,22 @@ const sendMail = (
     .promise();
 };
 
-export default async (parsedConfig: ParsedConfig) => {
+export type Result = {
+  presendTimestamp: string;
+  domain: string;
+  params: Omit<SES.SendTemplatedEmailRequest, 'TemplateData'> & {
+    TemplateData: {
+      partials: KeyValuePairs[];
+      booleans: KeyValuePairs[];
+      domain: string;
+    };
+  };
+  config: ParsedConfig;
+};
+
+export default async (
+  parsedConfig: ParsedConfig
+): Promise<{ result: Result; response: SES.SendTemplatedEmailResponse }> => {
   const {
     translations,
     recipient,
@@ -54,18 +67,6 @@ export default async (parsedConfig: ParsedConfig) => {
     config: parsedConfig,
   };
 
-  try {
-    const res = await sendMail(params);
-    return httpResponse(
-      200,
-      `Mail sent to ${params.Destination.ToAddresses[0]} (MessageId: "${res.MessageId}")`,
-      result
-    );
-  } catch (error) {
-    Logger.error(error);
-    return httpResponse(error.statusCode, error.message, {
-      error,
-      ...result,
-    });
-  }
+  const response = await sendMail(params);
+  return { result, response };
 };

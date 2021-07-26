@@ -1,12 +1,11 @@
-import 'source-map-support/register';
-
-import { getConfig } from '@libs/misc';
-import { Logger, getEnvironment } from '@libs/utils';
-import { middyfy } from '@libs/lambda';
 import {
   httpResponse,
   ValidatedEventAPIGatewayProxyEvent,
 } from '@libs/apiGateway';
+import { middyfy } from '@libs/lambda';
+import { getConfig } from '@libs/misc';
+import { getEnvironment, Logger } from '@libs/utils';
+import 'source-map-support/register';
 
 export const config: ValidatedEventAPIGatewayProxyEvent<typeof Object> = async (
   event

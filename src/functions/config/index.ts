@@ -30,4 +30,4 @@ export default {
       },
     },
   ],
-} as AWS['functions'];
+} as AWS['functions'][string];

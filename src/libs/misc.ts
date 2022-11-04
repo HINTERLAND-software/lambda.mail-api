@@ -78,13 +78,8 @@ export const prepareConfig = async (
   domain: string,
   keys: KeyValueMap
 ): Promise<ParsedConfig> => {
-  const {
-    config,
-    locale,
-    fallback,
-    overrideFor,
-    validations,
-  } = await getConfig(domain);
+  const { config, locale, fallback, overrideFor, validations } =
+    await getConfig(domain);
   const translations = await getTranslations(locale);
 
   const { mail = fallback } = keys;

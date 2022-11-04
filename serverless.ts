@@ -1,6 +1,6 @@
 import type { AWS } from '@serverless/typescript';
 
-import { send, config } from './src/functions';
+import { config, send } from './src/functions';
 
 const serverlessConfiguration: AWS = {
   service: '${file(./package.json):name}',
@@ -14,7 +14,7 @@ const serverlessConfiguration: AWS = {
   ],
   provider: {
     name: 'aws',
-    runtime: 'nodejs12.x',
+    runtime: 'nodejs14.x',
     region: '${env:AWS_REGION}' as AWS['provider']['region'],
     logRetentionInDays: 30,
     stage: '${opt:stage, env:ENV}', // you can override this via the CLI argument

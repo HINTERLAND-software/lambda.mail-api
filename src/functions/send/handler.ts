@@ -1,6 +1,6 @@
 import {
   httpResponse,
-  ValidatedEventAPIGatewayProxyEvent
+  ValidatedEventAPIGatewayProxyEvent,
 } from '@libs/apiGateway';
 import { middyfy } from '@libs/lambda';
 import { prepareConfig, validateRequest } from '@libs/misc';

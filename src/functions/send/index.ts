@@ -16,11 +16,11 @@ export default {
               domain: true,
             },
           },
-          schema: {
+          schemas: {
             'application/json': schema,
           },
         },
       },
     },
   ],
-} as AWS['functions'];
+} as AWS['functions'][string];

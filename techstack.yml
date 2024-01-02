@@ -1,0 +1,338 @@
+repo_name: HINTERLAND-software/lambda.mail-api
+report_id: 0411f4b0f39de236c532d359a5ed553e
+version: 0.1
+repo_type: Public
+timestamp: '2024-01-02T04:10:57+00:00'
+requested_by: jroehl
+provider: github
+branch: master
+detected_tools_count: 25
+tools:
+- name: JavaScript
+  description: Lightweight, interpreted, object-oriented language with first-class
+    functions
+  website_url: https://developer.mozilla.org/en-US/docs/Web/JavaScript
+  open_source: true
+  hosted_saas: false
+  category: Languages & Frameworks
+  sub_category: Languages
+  image_url: https://img.stackshare.io/service/1209/javascript.jpeg
+  detection_source: Repo Metadata
+- name: TypeScript
+  description: A superset of JavaScript that compiles to clean JavaScript output
+  website_url: http://www.typescriptlang.org
+  license: Apache-2.0
+  open_source: true
+  hosted_saas: false
+  category: Languages & Frameworks
+  sub_category: Languages
+  image_url: https://img.stackshare.io/service/1612/bynNY5dJ.jpg
+  detection_source: Repo Metadata
+- name: Node.js
+  description: A platform built on Chrome's JavaScript runtime for easily building
+    fast, scalable network applications
+  website_url: http://nodejs.org/
+  version: 14.18.1
+  open_source: true
+  hosted_saas: false
+  category: Languages & Frameworks
+  sub_category: Frameworks (Full Stack)
+  image_url: https://img.stackshare.io/service/1011/n1JRsFeB_400x400.png
+  detection_source_url: https://github.com/HINTERLAND-software/lambda.mail-api/blob/master/.nvmrc
+  detection_source: Repo Metadata
+  last_updated_by: jroehl
+  last_updated_on: 2022-11-04 19:16:10.000000000 Z
+- name: Dotenv
+  description: Loads environment variables from .env for Nodejs projects
+  website_url: https://github.com/motdotla/dotenv
+  license: BSD-2-Clause
+  open_source: true
+  hosted_saas: false
+  category: Build, Test, Deploy
+  sub_category: Server Configuration and Automation
+  image_url: https://img.stackshare.io/service/8067/default_90dcb1286af7685c68df319c764b80704df1155b.png
+  detection_source: package.json
+  last_updated_by: dependabot-preview[bot]
+  last_updated_on: 2021-05-24 07:16:11.000000000 Z
+- name: Git
+  description: Fast, scalable, distributed revision control system
+  website_url: http://git-scm.com/
+  open_source: true
+  hosted_saas: false
+  category: Build, Test, Deploy
+  sub_category: Version Control System
+  image_url: https://img.stackshare.io/service/1046/git.png
+  detection_source: Repo Metadata
+- name: GitHub Actions
+  description: Automate your workflow from idea to production
+  website_url: https://github.com/features/actions
+  open_source: false
+  hosted_saas: true
+  category: Build, Test, Deploy
+  sub_category: Continuous Integration
+  image_url: https://img.stackshare.io/service/11563/actions.png
+  detection_source: ".github/workflows/codeql-analysis.yml"
+  last_updated_by: Johann
+  last_updated_on: 2020-07-28 07:00:21.000000000 Z
+- name: Jest
+  description: Painless JavaScript Unit Testing
+  website_url: http://facebook.github.io/jest/
+  version: 26.6.3
+  license: MIT
+  open_source: true
+  hosted_saas: false
+  category: Build, Test, Deploy
+  sub_category: Javascript Testing Framework
+  image_url: https://img.stackshare.io/service/830/jest.png
+  detection_source_url: https://github.com/HINTERLAND-software/lambda.mail-api/blob/master/package-lock.json
+  detection_source: package.json
+  last_updated_by: jroehl
+  last_updated_on: 2020-01-05 11:00:24.000000000 Z
+- name: Prettier
+  description: 'Prettier is an opinionated code formatter. '
+  website_url: https://prettier.io/
+  version: 2.7.1
+  license: MIT
+  open_source: true
+  hosted_saas: false
+  category: Build, Test, Deploy
+  sub_category: Code Review
+  image_url: https://img.stackshare.io/service/7035/default_66f265943abed56bcdbfca1c866a4261b1fbb063.jpg
+  detection_source_url: https://github.com/HINTERLAND-software/lambda.mail-api/blob/master/package-lock.json
+  detection_source: package.json
+  last_updated_by: jroehl
+  last_updated_on: 2022-11-04 19:16:10.000000000 Z
+- name: Webpack
+  description: A bundler for javascript and friends
+  website_url: http://webpack.js.org
+  version: 5.74.0
+  license: MIT
+  open_source: true
+  hosted_saas: false
+  category: Build, Test, Deploy
+  sub_category: JS Build Tools / JS Task Runners
+  image_url: https://img.stackshare.io/service/1682/IMG_4636.PNG
+  detection_source_url: https://github.com/HINTERLAND-software/lambda.mail-api/blob/master/package-lock.json
+  detection_source: package.json
+  last_updated_by: jroehl
+  last_updated_on: 2022-11-04 19:16:10.000000000 Z
+- name: npm
+  description: The package manager for JavaScript.
+  website_url: https://www.npmjs.com/
+  open_source: false
+  hosted_saas: false
+  category: Build, Test, Deploy
+  sub_category: Front End Package Manager
+  image_url: https://img.stackshare.io/service/1120/lejvzrnlpb308aftn31u.png
+  detection_source: package.json
+  last_updated_by: jroehl
+  last_updated_on: 2020-01-05 11:00:24.000000000 Z
+- name: AWS Lambda
+  description: Automatically run code in response to modifications to objects in Amazon
+    S3 buckets, messages in Kinesis streams, or updates in DynamoDB
+  website_url: http://aws.amazon.com/lambda
+  open_source: false
+  hosted_saas: true
+  category: Application Hosting
+  sub_category: Serverless / Task Processing
+  image_url: https://img.stackshare.io/service/1909/aws-lambda.png
+  detection_source: package.json
+  last_updated_by: jroehl
+  last_updated_on: 2022-11-04 19:16:10.000000000 Z
+- name: Serverless
+  description: The most widely-adopted toolkit for building serverless applications
+  website_url: https://github.com/serverless/serverless
+  version: 2.72.3
+  license: MIT
+  open_source: true
+  hosted_saas: false
+  category: Application Hosting
+  sub_category: Serverless / Task Processing
+  image_url: https://img.stackshare.io/service/5095/serverless-logo.png
+  detection_source_url: https://github.com/HINTERLAND-software/lambda.mail-api/blob/master/package-lock.json
+  detection_source: package.json
+  last_updated_by: jroehl
+  last_updated_on: 2022-11-04 20:39:26.000000000 Z
+- name: "@types/aws-lambda"
+  description: TypeScript definitions for AWS Lambda
+  package_url: https://www.npmjs.com/@types/aws-lambda
+  version: 8.10.108
+  license: MIT
+  open_source: true
+  hosted_saas: false
+  category: Libraries
+  sub_category: npm Packages
+  image_url: https://img.stackshare.io/package/17868/default_b760b4f955878b0055c02bde0608c2f01e7d4f4f.png
+  detection_source_url: https://github.com/HINTERLAND-software/lambda.mail-api/blob/master/package-lock.json
+  detection_source: package.json
+  last_updated_by: jroehl
+  last_updated_on: 2022-11-04 19:16:10.000000000 Z
+- name: "@types/jest"
+  description: TypeScript definitions for Jest
+  package_url: https://www.npmjs.com/@types/jest
+  version: 26.0.24
+  license: MIT
+  open_source: true
+  hosted_saas: false
+  category: Libraries
+  sub_category: npm Packages
+  image_url: https://img.stackshare.io/package/15840/default_004658cda9b38934f2871435e9dc15608c86e8be.png
+  detection_source_url: https://github.com/HINTERLAND-software/lambda.mail-api/blob/master/package-lock.json
+  detection_source: package.json
+  last_updated_by: jroehl
+  last_updated_on: 2022-11-04 19:16:10.000000000 Z
+- name: "@types/node"
+  description: TypeScript definitions for Node.js
+  package_url: https://www.npmjs.com/@types/node
+  version: 16.18.3
+  license: MIT
+  open_source: true
+  hosted_saas: false
+  category: Libraries
+  sub_category: npm Packages
+  image_url: https://img.stackshare.io/package/15809/default_5e5e8ac63beda29f31f1844df64d4b8247570a66.png
+  detection_source_url: https://github.com/HINTERLAND-software/lambda.mail-api/blob/master/package-lock.json
+  detection_source: package.json
+  last_updated_by: jroehl
+  last_updated_on: 2022-11-04 19:16:10.000000000 Z
+- name: aws-sdk
+  description: AWS SDK for JavaScript
+  package_url: https://www.npmjs.com/aws-sdk
+  version: 2.1248.0
+  license: Apache-2.0
+  open_source: true
+  hosted_saas: false
+  category: Libraries
+  sub_category: npm Packages
+  image_url: https://img.stackshare.io/package/16018/default_7a88bebb451873cc63bd99007de5bd3bb8ef85de.png
+  detection_source_url: https://github.com/HINTERLAND-software/lambda.mail-api/blob/master/package-lock.json
+  detection_source: package.json
+  last_updated_by: jroehl
+  last_updated_on: 2022-11-04 19:16:10.000000000 Z
+- name: change-case
+  description: Transform a string between `camelCase`
+  package_url: https://www.npmjs.com/change-case
+  version: 4.1.2
+  license: MIT
+  open_source: true
+  hosted_saas: false
+  category: Libraries
+  sub_category: npm Packages
+  image_url: https://img.stackshare.io/package/16612/default_9cd376f2200c8f6c32ebd690bb6c290852dee64d.png
+  detection_source_url: https://github.com/HINTERLAND-software/lambda.mail-api/blob/master/package-lock.json
+  detection_source: package.json
+  last_updated_by: dependabot-preview[bot]
+  last_updated_on: 2020-12-07 00:32:01.000000000 Z
+- name: fork-ts-checker-webpack-plugin
+  description: Runs typescript type checker and linter on separate process
+  package_url: https://www.npmjs.com/fork-ts-checker-webpack-plugin
+  version: 6.5.2
+  license: MIT
+  open_source: true
+  hosted_saas: false
+  category: Libraries
+  sub_category: npm Packages
+  image_url: https://img.stackshare.io/package/16622/default_5a21421012fa20e57fe0aeab31228f42e7118abc.png
+  detection_source_url: https://github.com/HINTERLAND-software/lambda.mail-api/blob/master/package-lock.json
+  detection_source: package.json
+  last_updated_by: jroehl
+  last_updated_on: 2022-11-04 19:16:10.000000000 Z
+- name: jest-cli
+  description: Delightful JavaScript Testing
+  package_url: https://www.npmjs.com/jest-cli
+  version: 26.6.3
+  license: MIT
+  open_source: true
+  hosted_saas: false
+  category: Libraries
+  sub_category: npm Packages
+  image_url: https://img.stackshare.io/package/16022/default_7a465bc85b23fd837cbc038fd1d504632c41a884.png
+  detection_source_url: https://github.com/HINTERLAND-software/lambda.mail-api/blob/master/package-lock.json
+  detection_source: package.json
+  last_updated_by: jroehl
+  last_updated_on: 2022-11-04 19:16:10.000000000 Z
+- name: source-map-support
+  description: Fixes stack traces for files with source maps
+  package_url: https://www.npmjs.com/source-map-support
+  version: 0.5.21
+  license: MIT
+  open_source: true
+  hosted_saas: false
+  category: Libraries
+  sub_category: npm Packages
+  image_url: https://img.stackshare.io/package/16028/default_c7b204838197013798409fa2b4dafce450edc7fb.png
+  detection_source_url: https://github.com/HINTERLAND-software/lambda.mail-api/blob/master/package-lock.json
+  detection_source: package.json
+  last_updated_by: jroehl
+  last_updated_on: 2020-04-30 18:58:22.000000000 Z
+- name: ts-jest
+  description: A preprocessor with source maps support to help use TypeScript with
+    Jest
+  package_url: https://www.npmjs.com/ts-jest
+  version: 26.5.6
+  license: MIT
+  open_source: true
+  hosted_saas: false
+  category: Libraries
+  sub_category: npm Packages
+  image_url: https://img.stackshare.io/package/15864/default_6743ba96cf149a3c3c68a185199f9705d6eff80e.png
+  detection_source_url: https://github.com/HINTERLAND-software/lambda.mail-api/blob/master/package-lock.json
+  detection_source: package.json
+  last_updated_by: jroehl
+  last_updated_on: 2022-11-04 19:16:10.000000000 Z
+- name: ts-loader
+  description: TypeScript loader for webpack
+  package_url: https://www.npmjs.com/ts-loader
+  version: 9.4.1
+  license: MIT
+  open_source: true
+  hosted_saas: false
+  category: Libraries
+  sub_category: npm Packages
+  image_url: https://img.stackshare.io/package/15938/default_e0a4fb1126d7400f419f0931cf1669947a5bc552.png
+  detection_source_url: https://github.com/HINTERLAND-software/lambda.mail-api/blob/master/package-lock.json
+  detection_source: package.json
+  last_updated_by: jroehl
+  last_updated_on: 2022-11-04 19:16:10.000000000 Z
+- name: ts-node
+  description: TypeScript execution environment and REPL for node.js
+  package_url: https://www.npmjs.com/ts-node
+  version: 10.9.1
+  license: MIT
+  open_source: true
+  hosted_saas: false
+  category: Libraries
+  sub_category: npm Packages
+  image_url: https://img.stackshare.io/package/15830/default_6743ba96cf149a3c3c68a185199f9705d6eff80e.png
+  detection_source_url: https://github.com/HINTERLAND-software/lambda.mail-api/blob/master/package-lock.json
+  detection_source: package.json
+  last_updated_by: jroehl
+  last_updated_on: 2022-11-04 19:16:10.000000000 Z
+- name: tsconfig-paths-webpack-plugin
+  description: Load modules according to tsconfig paths in webpack
+  package_url: https://www.npmjs.com/tsconfig-paths-webpack-plugin
+  version: 3.5.2
+  license: MIT
+  open_source: true
+  hosted_saas: false
+  category: Libraries
+  sub_category: npm Packages
+  image_url: https://img.stackshare.io/package/17311/default_b8b4be8bd54f9619446b80b2bf448c0891101f2a.png
+  detection_source_url: https://github.com/HINTERLAND-software/lambda.mail-api/blob/master/package-lock.json
+  detection_source: package.json
+  last_updated_by: jroehl
+  last_updated_on: 2022-11-04 19:16:10.000000000 Z
+- name: webpack-node-externals
+  description: Easily exclude node_modules in Webpack bundle
+  package_url: https://www.npmjs.com/webpack-node-externals
+  version: 3.0.0
+  license: MIT
+  open_source: true
+  hosted_saas: false
+  category: Libraries
+  sub_category: npm Packages
+  image_url: https://img.stackshare.io/package/16156/default_ac04a744873b460c4ef30a7450ed0c83223640ab.png
+  detection_source_url: https://github.com/HINTERLAND-software/lambda.mail-api/blob/master/package-lock.json
+  detection_source: package.json
+  last_updated_by: jroehl
+  last_updated_on: 2022-11-04 19:16:10.000000000 Z
